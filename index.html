@@ -1,3 +1,50 @@
+<script>
+/* ===== SIMPLE LOGIN SYSTEM (NO SERVER) ===== */
+
+// Default users (you can change)
+let users = JSON.parse(localStorage.getItem("users")) || [
+    { id: "30004", password: "1234" },
+    { id: "admin", password: "admin123" }
+];
+
+// Save default if not exist
+localStorage.setItem("users", JSON.stringify(users));
+
+document.getElementById("loginBtn").addEventListener("click", function () {
+    const userId = document.getElementById("loginUserId").value;
+    const password = document.getElementById("loginPassword").value;
+    const errorDiv = document.getElementById("loginError");
+
+    const user = users.find(u => u.id === userId && u.password === password);
+
+    if (user) {
+        // Save login session
+        localStorage.setItem("loggedIn", "true");
+
+        // Hide login screen
+        document.getElementById("loginOverlay").style.display = "none";
+
+        // Show main app
+        document.getElementById("appContainer").style.display = "block";
+    } else {
+        errorDiv.innerText = "Invalid User ID or Password";
+    }
+});
+
+/* ===== AUTO LOGIN IF ALREADY LOGGED ===== */
+window.onload = function () {
+    if (localStorage.getItem("loggedIn") === "true") {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("appContainer").style.display = "block";
+    }
+};
+
+/* ===== LOGOUT FUNCTION ===== */
+function logout() {
+    localStorage.removeItem("loggedIn");
+    location.reload();
+}
+</script>
 <!DOCTYPE html>
 <html lang="en">
 <head>
