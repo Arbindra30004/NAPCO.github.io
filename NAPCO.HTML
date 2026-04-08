@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Emirates Logistics | Shelf Life + Pallet Intelligence</title>
+    <title>Emirates Logistics | Shelf Life + Pallet Intelligence | Brand Filter</title>
     <style>
         * {
             box-sizing: border-box;
@@ -168,6 +168,15 @@
             flex: 2;
             min-width: 200px;
         }
+        .filters select {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            min-width: 180px;
+        }
         .filters button {
             background: #1a3a5c;
             color: white;
@@ -237,6 +246,12 @@
         .progress-bar-warning { background: #ef6c00; }
         .progress-bar-critical { background: #c62828; }
         .tooltip-pallet { border-bottom: 1px dashed #aaa; cursor: help; }
+        .brand-dropdown-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1a3a5c;
+            margin-right: 4px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -250,17 +265,17 @@
                     <span class="logo-sub-emirates">Global Freight · Smart Supply Chain</span>
                 </div>
             </div>
-            <div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker</div>
+            <div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Brand Intelligence</div>
         </div>
     </div>
 
     <div class="main-app">
         <div class="container">
             <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
-            <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Unique Pallet Count (auto-updates on filter)</div>
+            <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Unique Pallet Count (auto-updates) | 🏷️ Brand dropdown filter</div>
 
             <div class="upload-area" id="uploadArea">
-                <p>📂 Click or drag & drop your Excel file here</p>
+                <p>📂 CLICK AND UPLOAD EXCEL FILE</p>
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
                 <small>COMMON WH05</small>
             </div>
@@ -276,7 +291,13 @@
             </div>
 
             <div class="filters">
-                <input type="text" id="searchInput" placeholder="🔍 Multi-search: type 'apple, banana' or 'pallet123 lotA' (comma or space separated)" autocomplete="off">
+                <input type="text" id="searchInput" placeholder="🔍 Multi-search: 'apple, banana' or 'pallet123 lotA' (comma or space)" autocomplete="off">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span>
+                    <select id="brandFilterSelect">
+                        <option value="ALL">🏷️ All Brands</option>
+                    </select>
+                </div>
                 <button id="clearFiltersBtn">Clear All Filters</button>
                 <button id="exportBtn" class="export-btn">📎 Export Filtered Data (Excel)</button>
             </div>
@@ -290,7 +311,7 @@
             <div class="footer">
                 ✅ Click column headers to sort | Click any stat card to auto-filter | 🟡 Yellow rows = expiring within 30 days<br>
                 📊 REMAINING LIFE % (days left) | ⏱️ CONSUMED LIFE % (days used) | 🧩 Pallet count updates instantly with filters.<br>
-                📎 Click "Export Filtered Data" to download current view.
+                🏷️ Brand dropdown filters exact brand match (case-insensitive) and combines with search & expiry filters.
             </div>
         </div>
     </div>
@@ -300,7 +321,7 @@
     <script>
         let originalData = [];
         let filteredData = [];
-        let columns = [];          // final displayed columns after filtering and adding life columns
+        let columns = [];          // final displayed columns after processing and adding life columns
         let sortColumn = "";
         let sortDirection = "asc";
         let currentPalletColumn = null;
@@ -308,6 +329,7 @@
         
         // Filter mode: null, "expired", "expiring_15", "expiring_30", "expiring_60"
         let expiryFilterMode = null;
+        let activeBrandFilter = "ALL";   // "ALL" or specific brand name (case preserved from selection)
 
         // ----- REQUIRED COLUMNS (exactly as user requested, plus computed ones) -----
         const REQUIRED_COLUMNS = [
@@ -315,7 +337,6 @@
             "MAN_DATE", "EXP_DATE", "BARCODE", "CARTON", "AVAILABLE_QTY", 
             "RECEIVE_DATE", "STATUS", "ITEM_DESCRIPTION", "ASN_NO"
         ];
-        // These will be shown in this exact order, followed by REMAINING_LIFE and CONSUMED_LIFE
 
         // Helper: parse date
         function parseDate(dateStr) {
@@ -347,7 +368,6 @@
             return Math.round((date2 - date1) / (1000 * 60 * 60 * 24));
         }
 
-        // Enhanced expiry status with granular ranges
         function getExpiryDetails(expDateStr) {
             if (!expDateStr || expDateStr === "") return { status: "unknown", daysLeft: null };
             let expDate = parseDate(expDateStr);
@@ -359,11 +379,6 @@
             if (diffDays <= 30) return { status: "expiring_30", daysLeft: diffDays };
             if (diffDays <= 60) return { status: "expiring_60", daysLeft: diffDays };
             return { status: "good", daysLeft: diffDays };
-        }
-
-        function isExpiringSoon(expDateStr) {
-            let details = getExpiryDetails(expDateStr);
-            return details.status === "expiring_15" || details.status === "expiring_30";
         }
 
         function getLifeDisplay(manDateStr, expDateStr) {
@@ -405,7 +420,53 @@
             };
         }
 
-        // Compute unique pallet count from filtered data (uses the "PALLET" column)
+        // Populate brand dropdown from original dataset (distinct BRAND values)
+        function populateBrandFilter() {
+            const brandSelect = document.getElementById("brandFilterSelect");
+            if (!originalData.length || !columns.length) {
+                brandSelect.innerHTML = '<option value="ALL">🏷️ All Brands</option>';
+                return;
+            }
+            const brandColIndex = columns.findIndex(c => c.toUpperCase() === "BRAND");
+            if (brandColIndex === -1) {
+                brandSelect.innerHTML = '<option value="ALL">🏷️ All Brands (No BRAND column)</option>';
+                return;
+            }
+            const uniqueBrands = new Set();
+            for (let row of originalData) {
+                let brandVal = row[brandColIndex];
+                if (brandVal !== undefined && brandVal !== null && String(brandVal).trim() !== "") {
+                    uniqueBrands.add(String(brandVal).trim());
+                }
+            }
+            let optionsHtml = '<option value="ALL">🏷️ All Brands</option>';
+            const sortedBrands = Array.from(uniqueBrands).sort((a,b) => a.localeCompare(b));
+            for (let brand of sortedBrands) {
+                optionsHtml += `<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`;
+            }
+            brandSelect.innerHTML = optionsHtml;
+            // restore previously selected brand if it still exists (after new upload reset to ALL)
+            if (activeBrandFilter !== "ALL" && uniqueBrands.has(activeBrandFilter)) {
+                brandSelect.value = activeBrandFilter;
+            } else {
+                brandSelect.value = "ALL";
+                activeBrandFilter = "ALL";
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+
+        // Unique pallet count
         function computeUniquePalletCountFromData(dataRows, colNames) {
             if (!dataRows.length) return 0;
             let palletColIndex = colNames.findIndex(c => c.toUpperCase() === "PALLET");
@@ -419,7 +480,6 @@
                 currentPalletColumn = "PALLET";
                 return distinctVals.size;
             } else {
-                // Fallback: use AVAILABLE_QTY column if exists, assume 1 pallet per 50 units
                 let qtyColIndex = colNames.findIndex(c => c.toUpperCase() === "AVAILABLE_QTY");
                 if (qtyColIndex !== -1) {
                     let totalUnits = 0;
@@ -450,13 +510,11 @@
             if (parent) parent.setAttribute("title", titleText);
         }
 
-        // Process uploaded data: keep only required columns, add life columns
+        // Process uploaded data: keep required columns, add life columns
         function processData(rawRows, rawCols) {
-            // Build mapping from column name to index in raw data
             let colIndexMap = {};
             rawCols.forEach((name, idx) => { colIndexMap[name.toUpperCase()] = idx; });
             
-            // Determine which required columns exist
             let finalCols = [];
             let selectedIndices = [];
             for (let req of REQUIRED_COLUMNS) {
@@ -465,13 +523,11 @@
                     finalCols.push(req);
                     selectedIndices.push(colIndexMap[upperReq]);
                 } else {
-                    // Column missing: add placeholder with empty string
                     finalCols.push(req);
-                    selectedIndices.push(-1); // mark as missing
+                    selectedIndices.push(-1);
                 }
             }
             
-            // Prepare new rows: extract only required columns, fill missing with ""
             let processedData = [];
             for (let row of rawRows) {
                 let newRow = [];
@@ -486,7 +542,6 @@
                 processedData.push(newRow);
             }
             
-            // Now add REMAINING_LIFE and CONSUMED_LIFE columns
             let manDateIndexInFinal = finalCols.indexOf("MAN_DATE");
             let expDateIndexInFinal = finalCols.indexOf("EXP_DATE");
             
@@ -531,6 +586,7 @@
             XLSX.writeFile(wb, `emirates_logistics_filtered_${timestamp}.xlsx`);
         }
 
+        // Combined filter: search, expiry mode, brand filter
         function applyFilters() {
             let searchTermRaw = document.getElementById("searchInput").value.trim();
             let searchTerms = [];
@@ -541,6 +597,12 @@
                     searchTerms = searchTermRaw.split(/\s+/).map(s => s.trim().toLowerCase()).filter(s => s);
                 }
             }
+            
+            // get current brand filter value from dropdown
+            const brandSelect = document.getElementById("brandFilterSelect");
+            activeBrandFilter = brandSelect.value;
+            
+            const brandColIndex = columns.findIndex(c => c.toUpperCase() === "BRAND");
             
             filteredData = originalData.filter(row => {
                 // expiry filter mode
@@ -553,7 +615,15 @@
                     if (expiryFilterMode === "expiring_30" && details.status !== "expiring_30") return false;
                     if (expiryFilterMode === "expiring_60" && details.status !== "expiring_60") return false;
                 }
-                // multi-search
+                
+                // brand filter
+                if (activeBrandFilter !== "ALL" && brandColIndex !== -1) {
+                    let rowBrand = row[brandColIndex];
+                    let brandVal = (rowBrand !== undefined && rowBrand !== null) ? String(rowBrand).trim() : "";
+                    if (brandVal !== activeBrandFilter) return false;
+                }
+                
+                // multi-search filter
                 if (searchTerms.length > 0) {
                     let matchFound = false;
                     for (let i = 0; i < row.length; i++) {
@@ -581,6 +651,10 @@
 
         function clearFilters() {
             document.getElementById("searchInput").value = "";
+            // reset brand dropdown to "ALL"
+            const brandSelect = document.getElementById("brandFilterSelect");
+            if (brandSelect) brandSelect.value = "ALL";
+            activeBrandFilter = "ALL";
             expiryFilterMode = null;
             applyFilters();
         }
@@ -621,7 +695,7 @@
             document.getElementById("tableHeader").innerHTML = headerHtml;
             let tbody = document.getElementById("tableBody");
             tbody.innerHTML = "";
-            if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="100" class="no-data">No data found. Upload Excel file.少数</tr>'; updateStats(); return; }
+            if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters.</td></tr>'; updateStats(); return; }
             
             let sorted = [...filteredData];
             if (sortColumn) {
@@ -670,22 +744,22 @@
                         else if (statusText === "Damaged") statusClass += " status-Damaged";
                         else if (statusText === "Hold") statusClass += " status-Hold";
                         else if (statusText === "E") statusClass += " status-E";
-                        td.innerHTML = `<span class="${statusClass}">${cellValue}</span>`;
+                        td.innerHTML = `<span class="${statusClass}">${escapeHtml(cellValue)}</span>`;
                     } else if (col === "REMAINING_LIFE") {
                         if (cellValue && typeof cellValue === 'object' && cellValue.percentage !== null) {
                             let percent = cellValue.percentage, barWidth = Math.max(0, Math.min(100, percent));
-                            td.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${cellValue.barClass}" style="width:${barWidth}%;"></div></div><span class="${cellValue.textClass}">📊 ${cellValue.text}</span></div>`;
+                            td.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${cellValue.barClass}" style="width:${barWidth}%;"></div></div><span class="${cellValue.textClass}">📊 ${escapeHtml(cellValue.text)}</span></div>`;
                         } else td.innerText = "-";
                     } else if (col === "CONSUMED_LIFE") {
                         if (cellValue && typeof cellValue === 'object' && cellValue.percentage !== null) {
                             let percent = cellValue.percentage, barWidth = Math.max(0, Math.min(100, percent));
-                            td.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${cellValue.barClass}" style="width:${barWidth}%;"></div></div><span class="${cellValue.textClass}">⏱️ ${cellValue.text}</span></div>`;
+                            td.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${cellValue.barClass}" style="width:${barWidth}%;"></div></div><span class="${cellValue.textClass}">⏱️ ${escapeHtml(cellValue.text)}</span></div>`;
                         } else td.innerText = "-";
                     } else if (col.toUpperCase() === "EXP_DATE") {
-                        if (details.status === "expired") td.innerHTML = `<span style="color:#c62828; font-weight:bold;">⚠️ EXPIRED: ${cellValue}</span>`;
-                        else if (details.status === "expiring_15") td.innerHTML = `<span style="color:#ef6c00; font-weight:bold;">⚠️ <15 days: ${cellValue}</span>`;
-                        else if (details.status === "expiring_30") td.innerHTML = `<span style="color:#ffa000; font-weight:bold;">⏰ <30 days: ${cellValue}</span>`;
-                        else if (details.status === "expiring_60") td.innerHTML = `<span style="color:#ffb74d;">📅 <60 days: ${cellValue}</span>`;
+                        if (details.status === "expired") td.innerHTML = `<span style="color:#c62828; font-weight:bold;">⚠️ EXPIRED: ${escapeHtml(cellValue)}</span>`;
+                        else if (details.status === "expiring_15") td.innerHTML = `<span style="color:#ef6c00; font-weight:bold;">⚠️ <15 days: ${escapeHtml(cellValue)}</span>`;
+                        else if (details.status === "expiring_30") td.innerHTML = `<span style="color:#ffa000; font-weight:bold;">⏰ <30 days: ${escapeHtml(cellValue)}</span>`;
+                        else if (details.status === "expiring_60") td.innerHTML = `<span style="color:#ffb74d;">📅 <60 days: ${escapeHtml(cellValue)}</span>`;
                         else td.innerText = cellValue;
                     } else td.innerText = cellValue;
                     tr.appendChild(td);
@@ -722,6 +796,9 @@
             originalData = processed.data;
             expiryFilterMode = null;
             document.getElementById("searchInput").value = "";
+            // populate brand dropdown from original data
+            populateBrandFilter();
+            // re-apply filters (brand dropdown may have reset to ALL)
             applyFilters();
         }
 
@@ -748,6 +825,7 @@
             }
         });
         document.getElementById("searchInput").addEventListener("input", applyFilters);
+        document.getElementById("brandFilterSelect").addEventListener("change", applyFilters);
         document.getElementById("clearFiltersBtn").addEventListener("click", clearFilters);
         document.getElementById("exportBtn").addEventListener("click", exportToExcel);
         
@@ -758,7 +836,7 @@
         document.getElementById("statExpiring30").addEventListener("click", () => { expiryFilterMode = "expiring_30"; applyFilters(); });
         document.getElementById("statExpiring60").addEventListener("click", () => { expiryFilterMode = "expiring_60"; applyFilters(); });
         
-        console.log("Emirates Logistics ready: only required columns displayed, pallet count uses PALLET column.");
+        console.log("Emirates Logistics ready — Brand filter fully integrated.");
     </script>
 </body>
 </html>
