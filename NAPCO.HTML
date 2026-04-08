@@ -129,14 +129,14 @@
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
         .stat-card {
             background: white;
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             border-left: 5px solid;
@@ -145,8 +145,8 @@
         }
         .stat-card:hover { transform: translateY(-3px); background: #fefefe; box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
         .stat-card:active { transform: translateY(1px); }
-        .stat-card h3 { margin: 0; font-size: 0.85rem; color: #5a6e7c; }
-        .stat-card .number { font-size: 2rem; font-weight: bold; margin: 10px 0 0; }
+        .stat-card h3 { margin: 0; font-size: 0.8rem; color: #5a6e7c; }
+        .stat-card .number { font-size: 1.8rem; font-weight: bold; margin: 8px 0 0; }
         .stat-active { background: #e8f0fe; border-left-width: 6px; }
         
         .filters {
@@ -193,7 +193,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            min-width: 1200px;
+            min-width: 800px;
         }
         th {
             background: #1a3a5c;
@@ -262,15 +262,17 @@
             <div class="upload-area" id="uploadArea">
                 <p>📂 Click or drag & drop your Excel file here</p>
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-                <small>Your file stays private. Pallet ID auto-detected.</small>
+                <small>COMMON WH05</small>
             </div>
 
             <div class="stats" id="statsContainer">
-                <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products (Rows)</h3><div class="number" id="totalRows">0</div></div>
+                <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products</h3><div class="number" id="totalRows">0</div></div>
                 <div class="stat-card" id="statExpired" style="border-left-color:#d32f2f"><h3>❌ Expired</h3><div class="number" id="expiredCount">0</div></div>
-                <div class="stat-card" id="statExpiring" style="border-left-color:#ffa000"><h3>⚠️ Expiring <30 days</h3><div class="number" id="expiringSoonCount">0</div></div>
-                <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 Total Available Qty</h3><div class="number" id="totalQty">0</div></div>
-                <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT (filtered)<span class="tooltip-pallet" title="Unique pallets in current filtered view">ⓘ</span></h3><div class="number" id="uniquePalletCount">0</div></div>
+                <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring <15 days</h3><div class="number" id="expiring15Count">0</div></div>
+                <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring <30 days</h3><div class="number" id="expiring30Count">0</div></div>
+                <div class="stat-card" id="statExpiring60" style="border-left-color:#ffd54f"><h3>⚠️ Expiring <60 days</h3><div class="number" id="expiring60Count">0</div></div>
+                <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 Total Avail. Qty</h3><div class="number" id="totalQty">0</div></div>
+                <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT (filtered)</h3><div class="number" id="uniquePalletCount">0</div></div>
             </div>
 
             <div class="filters">
@@ -286,9 +288,9 @@
                 </table>
             </div>
             <div class="footer">
-                ✅ Click column headers to sort | Click on 📦 Total, ❌ Expired or ⚠️ Expiring cards to auto-filter | 🔴 Red row = Expired | 🟡 Yellow = Expiring in <30 days<br>
-                📊 REMAINING LIFE % (days left) | ⏱️ CONSUMED LIFE % (days used) | 🧩 Pallet count updates instantly based on current filters.<br>
-                📎 Click "Export Filtered Data" to download current filtered view as Excel file.
+                ✅ Click column headers to sort | Click any stat card to auto-filter | 🟡 Yellow rows = expiring within 30 days<br>
+                📊 REMAINING LIFE % (days left) | ⏱️ CONSUMED LIFE % (days used) | 🧩 Pallet count updates instantly with filters.<br>
+                📎 Click "Export Filtered Data" to download current view.
             </div>
         </div>
     </div>
@@ -298,15 +300,22 @@
     <script>
         let originalData = [];
         let filteredData = [];
-        let columns = [];
-        let rawColumns = [];
+        let columns = [];          // final displayed columns after filtering and adding life columns
         let sortColumn = "";
         let sortDirection = "asc";
         let currentPalletColumn = null;
         let fallbackPalletEstimate = false;
         
-        // expiry filter mode: null = no filter, "expired", "expiring_soon_and_expired"
+        // Filter mode: null, "expired", "expiring_15", "expiring_30", "expiring_60"
         let expiryFilterMode = null;
+
+        // ----- REQUIRED COLUMNS (exactly as user requested, plus computed ones) -----
+        const REQUIRED_COLUMNS = [
+            "BRAND", "PALLET", "BIN_LOCATION", "ITEM_CODES", "LOT_NUMBER", 
+            "MAN_DATE", "EXP_DATE", "BARCODE", "CARTON", "AVAILABLE_QTY", 
+            "RECEIVE_DATE", "STATUS", "ITEM_DESCRIPTION", "ASN_NO"
+        ];
+        // These will be shown in this exact order, followed by REMAINING_LIFE and CONSUMED_LIFE
 
         // Helper: parse date
         function parseDate(dateStr) {
@@ -338,15 +347,23 @@
             return Math.round((date2 - date1) / (1000 * 60 * 60 * 24));
         }
 
-        function getExpiryStatus(expDateStr) {
-            if (!expDateStr || expDateStr === "") return "unknown";
+        // Enhanced expiry status with granular ranges
+        function getExpiryDetails(expDateStr) {
+            if (!expDateStr || expDateStr === "") return { status: "unknown", daysLeft: null };
             let expDate = parseDate(expDateStr);
-            if (!expDate) return "unknown";
+            if (!expDate) return { status: "unknown", daysLeft: null };
             let today = new Date(); today.setHours(0,0,0,0);
             let diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
-            if (diffDays < 0) return "expired";
-            if (diffDays <= 30) return "expiring_soon";
-            return "good";
+            if (diffDays < 0) return { status: "expired", daysLeft: diffDays };
+            if (diffDays <= 15) return { status: "expiring_15", daysLeft: diffDays };
+            if (diffDays <= 30) return { status: "expiring_30", daysLeft: diffDays };
+            if (diffDays <= 60) return { status: "expiring_60", daysLeft: diffDays };
+            return { status: "good", daysLeft: diffDays };
+        }
+
+        function isExpiringSoon(expDateStr) {
+            let details = getExpiryDetails(expDateStr);
+            return details.status === "expiring_15" || details.status === "expiring_30";
         }
 
         function getLifeDisplay(manDateStr, expDateStr) {
@@ -388,15 +405,10 @@
             };
         }
 
-        // ----- UPDATED: compute unique pallet count based on any dataset (original or filtered) -----
+        // Compute unique pallet count from filtered data (uses the "PALLET" column)
         function computeUniquePalletCountFromData(dataRows, colNames) {
             if (!dataRows.length) return 0;
-            let palletKeywords = ["PALLET_ID", "PALLET_NO", "PALLET_NUMBER", "PALLET", "PALLETID", "PALLET CODE"];
-            let palletColIndex = -1;
-            for (let i = 0; i < colNames.length; i++) {
-                let upper = colNames[i].toUpperCase();
-                if (palletKeywords.some(kw => upper.includes(kw))) { palletColIndex = i; break; }
-            }
+            let palletColIndex = colNames.findIndex(c => c.toUpperCase() === "PALLET");
             if (palletColIndex !== -1) {
                 let distinctVals = new Set();
                 for (let row of dataRows) {
@@ -404,10 +416,10 @@
                     if (val !== undefined && val !== null && String(val).trim() !== "") distinctVals.add(String(val).trim());
                 }
                 fallbackPalletEstimate = false;
-                currentPalletColumn = colNames[palletColIndex];
+                currentPalletColumn = "PALLET";
                 return distinctVals.size;
             } else {
-                // Fallback: use AVAILABLE_QTY column if exists, assume 1 pallet per 50 units (rounded up)
+                // Fallback: use AVAILABLE_QTY column if exists, assume 1 pallet per 50 units
                 let qtyColIndex = colNames.findIndex(c => c.toUpperCase() === "AVAILABLE_QTY");
                 if (qtyColIndex !== -1) {
                     let totalUnits = 0;
@@ -426,7 +438,6 @@
             }
         }
 
-        // Update pallet count stat based on filtered data (current view)
         function updatePalletCountStat() {
             if (!filteredData.length || !columns.length) {
                 document.getElementById("uniquePalletCount").innerText = "0";
@@ -439,42 +450,67 @@
             if (parent) parent.setAttribute("title", titleText);
         }
 
+        // Process uploaded data: keep only required columns, add life columns
         function processData(rawRows, rawCols) {
-            let brandIndex = rawCols.findIndex(c => c.toUpperCase() === "BRAND");
-            let clientIdIndex = rawCols.findIndex(c => c.toUpperCase() === "CLIENT_ID");
-            let manDateIndex = rawCols.findIndex(c => c.toUpperCase() === "MAN_DATE");
-            let expDateIndex = rawCols.findIndex(c => c.toUpperCase() === "EXP_DATE");
-            let newColumns = [];
-            for (let i = 0; i < rawCols.length; i++) if (i !== brandIndex && i !== clientIdIndex) newColumns.push(rawCols[i]);
-            newColumns.push("REMAINING_LIFE");
-            newColumns.push("CONSUMED_LIFE");
+            // Build mapping from column name to index in raw data
+            let colIndexMap = {};
+            rawCols.forEach((name, idx) => { colIndexMap[name.toUpperCase()] = idx; });
+            
+            // Determine which required columns exist
+            let finalCols = [];
+            let selectedIndices = [];
+            for (let req of REQUIRED_COLUMNS) {
+                let upperReq = req.toUpperCase();
+                if (colIndexMap.hasOwnProperty(upperReq)) {
+                    finalCols.push(req);
+                    selectedIndices.push(colIndexMap[upperReq]);
+                } else {
+                    // Column missing: add placeholder with empty string
+                    finalCols.push(req);
+                    selectedIndices.push(-1); // mark as missing
+                }
+            }
+            
+            // Prepare new rows: extract only required columns, fill missing with ""
             let processedData = [];
             for (let row of rawRows) {
                 let newRow = [];
-                for (let i = 0; i < rawCols.length; i++) if (i !== brandIndex && i !== clientIdIndex) newRow.push(row[i] !== undefined && row[i] !== null ? row[i] : "");
-                let manDateStr = manDateIndex !== -1 ? row[manDateIndex] : "";
-                let expDateStr = expDateIndex !== -1 ? row[expDateIndex] : "";
-                let lifeDisplay = getLifeDisplay(manDateStr, expDateStr);
-                newRow.push(lifeDisplay.remaining);
-                newRow.push(lifeDisplay.consumed);
+                for (let i = 0; i < selectedIndices.length; i++) {
+                    let idx = selectedIndices[i];
+                    if (idx !== -1 && row[idx] !== undefined && row[idx] !== null) {
+                        newRow.push(row[idx]);
+                    } else {
+                        newRow.push("");
+                    }
+                }
                 processedData.push(newRow);
             }
-            return { columns: newColumns, data: processedData };
+            
+            // Now add REMAINING_LIFE and CONSUMED_LIFE columns
+            let manDateIndexInFinal = finalCols.indexOf("MAN_DATE");
+            let expDateIndexInFinal = finalCols.indexOf("EXP_DATE");
+            
+            let finalColumnsWithLife = [...finalCols, "REMAINING_LIFE", "CONSUMED_LIFE"];
+            
+            let finalData = [];
+            for (let row of processedData) {
+                let manDateStr = (manDateIndexInFinal !== -1) ? row[manDateIndexInFinal] : "";
+                let expDateStr = (expDateIndexInFinal !== -1) ? row[expDateIndexInFinal] : "";
+                let lifeDisplay = getLifeDisplay(manDateStr, expDateStr);
+                let newRow = [...row, lifeDisplay.remaining, lifeDisplay.consumed];
+                finalData.push(newRow);
+            }
+            
+            return { columns: finalColumnsWithLife, data: finalData };
         }
 
-        // Prepare a row for export: convert object columns to readable strings
         function prepareExportRow(row, cols) {
             return row.map((cell, idx) => {
                 let colName = cols[idx];
-                if (colName === "REMAINING_LIFE" && cell && typeof cell === 'object' && cell.text) {
+                if ((colName === "REMAINING_LIFE" || colName === "CONSUMED_LIFE") && cell && typeof cell === 'object' && cell.text) {
                     return cell.text;
                 }
-                if (colName === "CONSUMED_LIFE" && cell && typeof cell === 'object' && cell.text) {
-                    return cell.text;
-                }
-                if (typeof cell === 'object' && cell !== null) {
-                    return cell.text || JSON.stringify(cell);
-                }
+                if (typeof cell === 'object' && cell !== null) return cell.text || JSON.stringify(cell);
                 return cell;
             });
         }
@@ -485,20 +521,16 @@
                 return;
             }
             let exportRows = [columns];
-            for (let row of filteredData) {
-                exportRows.push(prepareExportRow(row, columns));
-            }
+            for (let row of filteredData) exportRows.push(prepareExportRow(row, columns));
             let ws = XLSX.utils.aoa_to_sheet(exportRows);
             ws['!cols'] = columns.map(c => ({ wch: Math.min(25, Math.max(10, c.length)) }));
             let wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Filtered_Shelf_Life");
             let now = new Date();
             let timestamp = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-            let filename = `emirates_logistics_filtered_${timestamp}.xlsx`;
-            XLSX.writeFile(wb, filename);
+            XLSX.writeFile(wb, `emirates_logistics_filtered_${timestamp}.xlsx`);
         }
 
-        // Apply filters (search + expiry mode) and then update all stats including pallet count
         function applyFilters() {
             let searchTermRaw = document.getElementById("searchInput").value.trim();
             let searchTerms = [];
@@ -515,33 +547,35 @@
                 if (expiryFilterMode !== null) {
                     let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
                     let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
-                    let status = getExpiryStatus(expDateStr);
-                    if (expiryFilterMode === "expired" && status !== "expired") return false;
-                    if (expiryFilterMode === "expiring_soon_and_expired" && !(status === "expired" || status === "expiring_soon")) return false;
+                    let details = getExpiryDetails(expDateStr);
+                    if (expiryFilterMode === "expired" && details.status !== "expired") return false;
+                    if (expiryFilterMode === "expiring_15" && details.status !== "expiring_15") return false;
+                    if (expiryFilterMode === "expiring_30" && details.status !== "expiring_30") return false;
+                    if (expiryFilterMode === "expiring_60" && details.status !== "expiring_60") return false;
                 }
-                // multi-search (OR logic across all cells)
+                // multi-search
                 if (searchTerms.length > 0) {
                     let matchFound = false;
                     for (let i = 0; i < row.length; i++) {
                         let cellVal = "";
                         if (typeof row[i] === 'object' && row[i] !== null && row[i].text) cellVal = row[i].text.toLowerCase();
                         else cellVal = String(row[i] || "").toLowerCase();
-                        for (let term of searchTerms) {
-                            if (cellVal.includes(term)) { matchFound = true; break; }
-                        }
-                        if (matchFound) break;
+                        if (searchTerms.some(term => cellVal.includes(term))) { matchFound = true; break; }
                     }
                     if (!matchFound) return false;
                 }
                 return true;
             });
-            renderTable();  // this will call updateStats() which now updates pallet count
+            renderTable();
+            highlightActiveStatCard();
         }
 
         function highlightActiveStatCard() {
             document.querySelectorAll(".stat-card").forEach(card => card.classList.remove("stat-active"));
             if (expiryFilterMode === "expired") document.getElementById("statExpired")?.classList.add("stat-active");
-            else if (expiryFilterMode === "expiring_soon_and_expired") document.getElementById("statExpiring")?.classList.add("stat-active");
+            else if (expiryFilterMode === "expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active");
+            else if (expiryFilterMode === "expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active");
+            else if (expiryFilterMode === "expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active");
             else document.getElementById("statTotal")?.classList.add("stat-active");
         }
 
@@ -551,30 +585,38 @@
             applyFilters();
         }
 
-        // Update all stats (row counts, expired, expiring, total qty, and pallet count)
         function updateStats() {
             let total = filteredData.length;
-            let expired = 0, expiringSoon = 0, totalAvailableQty = 0;
+            let expired = 0, expiring15 = 0, expiring30 = 0, expiring60 = 0, totalAvailableQty = 0;
             let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
             let qtyColIndex = columns.findIndex(c => c.toUpperCase() === "AVAILABLE_QTY");
             filteredData.forEach(row => {
                 let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
-                let status = getExpiryStatus(expDateStr);
-                if (status === "expired") expired++;
-                if (status === "expiring_soon") expiringSoon++;
-                if (qtyColIndex !== -1) { let qty = parseFloat(row[qtyColIndex]); if (!isNaN(qty)) totalAvailableQty += qty; }
+                let details = getExpiryDetails(expDateStr);
+                if (details.status === "expired") expired++;
+                else if (details.status === "expiring_15") expiring15++;
+                else if (details.status === "expiring_30") expiring30++;
+                else if (details.status === "expiring_60") expiring60++;
+                if (qtyColIndex !== -1) {
+                    let qty = parseFloat(row[qtyColIndex]);
+                    if (!isNaN(qty)) totalAvailableQty += qty;
+                }
             });
             document.getElementById("totalRows").innerText = total;
             document.getElementById("expiredCount").innerText = expired;
-            document.getElementById("expiringSoonCount").innerText = expiringSoon;
+            document.getElementById("expiring15Count").innerText = expiring15;
+            document.getElementById("expiring30Count").innerText = expiring30;
+            document.getElementById("expiring60Count").innerText = expiring60;
             document.getElementById("totalQty").innerText = Math.round(totalAvailableQty);
-            // Pallet count based on filtered data
             updatePalletCountStat();
         }
 
         function renderTable() {
             let headerHtml = "<tr>";
-            columns.forEach(col => { let displayName = col.length > 22 ? col.substring(0,20)+".." : col; headerHtml += `<th data-column="${col}">${displayName} ↕️</th>`; });
+            columns.forEach(col => {
+                let displayName = col.length > 22 ? col.substring(0,20)+".." : col;
+                headerHtml += `<th data-column="${col}">${displayName} ↕️</th>`;
+            });
             headerHtml += "</tr>";
             document.getElementById("tableHeader").innerHTML = headerHtml;
             let tbody = document.getElementById("tableBody");
@@ -612,8 +654,10 @@
             let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
             for (let row of sorted) {
                 let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
-                let expiryStatus = getExpiryStatus(expDateStr);
-                let rowClass = expiryStatus === "expired" ? "expired" : (expiryStatus === "expiring_soon" ? "expiring-soon" : "");
+                let details = getExpiryDetails(expDateStr);
+                let rowClass = "";
+                if (details.status === "expired") rowClass = "expired";
+                else if (details.status === "expiring_15" || details.status === "expiring_30") rowClass = "expiring-soon";
                 let tr = document.createElement("tr");
                 tr.className = rowClass;
                 columns.forEach((col, idx) => {
@@ -638,16 +682,17 @@
                             td.innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${cellValue.barClass}" style="width:${barWidth}%;"></div></div><span class="${cellValue.textClass}">⏱️ ${cellValue.text}</span></div>`;
                         } else td.innerText = "-";
                     } else if (col.toUpperCase() === "EXP_DATE") {
-                        if (expiryStatus === "expired") td.innerHTML = `<span style="color:#c62828; font-weight:bold;">⚠️ EXPIRED: ${cellValue}</span>`;
-                        else if (expiryStatus === "expiring_soon") td.innerHTML = `<span style="color:#ef6c00; font-weight:bold;">⏰ ${cellValue}</span>`;
+                        if (details.status === "expired") td.innerHTML = `<span style="color:#c62828; font-weight:bold;">⚠️ EXPIRED: ${cellValue}</span>`;
+                        else if (details.status === "expiring_15") td.innerHTML = `<span style="color:#ef6c00; font-weight:bold;">⚠️ <15 days: ${cellValue}</span>`;
+                        else if (details.status === "expiring_30") td.innerHTML = `<span style="color:#ffa000; font-weight:bold;">⏰ <30 days: ${cellValue}</span>`;
+                        else if (details.status === "expiring_60") td.innerHTML = `<span style="color:#ffb74d;">📅 <60 days: ${cellValue}</span>`;
                         else td.innerText = cellValue;
                     } else td.innerText = cellValue;
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
             }
-            updateStats();  // this will refresh counts + pallet count based on filteredData
-            // Re-attach sort listeners
+            updateStats();
             document.querySelectorAll("th").forEach(th => {
                 th.addEventListener("click", () => {
                     let column = th.getAttribute("data-column");
@@ -663,8 +708,8 @@
             let firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             let rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: "" });
             if (!rows || rows.length < 2) { alert("File seems empty."); return; }
-            rawColumns = rows[0].map(cell => String(cell || "").trim()).filter(c => c !== "");
-            if (rawColumns.length === 0) { alert("No column headers."); return; }
+            let rawColumns = rows[0].map(cell => String(cell || "").trim()).filter(c => c !== "");
+            if (rawColumns.length === 0) { alert("No column headers found."); return; }
             let rawData = [];
             for (let i=1; i<rows.length; i++) {
                 let row = rows[i];
@@ -709,9 +754,11 @@
         // Stat card click handlers
         document.getElementById("statTotal").addEventListener("click", () => { expiryFilterMode = null; applyFilters(); });
         document.getElementById("statExpired").addEventListener("click", () => { expiryFilterMode = "expired"; applyFilters(); });
-        document.getElementById("statExpiring").addEventListener("click", () => { expiryFilterMode = "expiring_soon_and_expired"; applyFilters(); });
+        document.getElementById("statExpiring15").addEventListener("click", () => { expiryFilterMode = "expiring_15"; applyFilters(); });
+        document.getElementById("statExpiring30").addEventListener("click", () => { expiryFilterMode = "expiring_30"; applyFilters(); });
+        document.getElementById("statExpiring60").addEventListener("click", () => { expiryFilterMode = "expiring_60"; applyFilters(); });
         
-        console.log("Emirates Logistics ready: Pallet count updates automatically with filters. Export to Excel enabled.");
+        console.log("Emirates Logistics ready: only required columns displayed, pallet count uses PALLET column.");
     </script>
 </body>
 </html>
