@@ -252,6 +252,75 @@
             color: #1a3a5c;
             margin-right: 4px;
         }
+
+        /* PAGINATION STYLES */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .pagination-btn {
+            background: #1a3a5c;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            min-width: 90px;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            background: #0d2b44;
+            transform: translateY(-1px);
+        }
+        .pagination-btn:disabled {
+            background: #b0bec5;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .page-info {
+            background: #eef2f7;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #1a3a5c;
+            font-size: 0.9rem;
+        }
+        .pagination-jump {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .pagination-jump input {
+            width: 60px;
+            padding: 6px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-weight: bold;
+        }
+        .pagination-jump button {
+            background: #c9a03d;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .pagination-jump button:hover {
+            background: #b38f2f;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
@@ -272,7 +341,7 @@
     <div class="main-app">
         <div class="container">
             <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
-            <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Unique Pallet Count (auto-updates) | 🏷️ Brand dropdown filter</div>
+            <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Unique Pallet Count | 🏷️ Brand dropdown | 📄 30 rows per page with pagination</div>
 
             <div class="upload-area" id="uploadArea">
                 <p>📂 CLICK AND UPLOAD EXCEL FILE</p>
@@ -308,10 +377,23 @@
                     <tbody id="tableBody"></tbody>
                 </table>
             </div>
+
+            <!-- PAGINATION CONTROLS (30 rows per page) -->
+            <div class="pagination-container" id="paginationControls">
+                <button class="pagination-btn" id="prevPageBtn" disabled>◀ Previous</button>
+                <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                <button class="pagination-btn" id="nextPageBtn" disabled>Next ▶</button>
+                <div class="pagination-jump">
+                    <span>Go to page</span>
+                    <input type="number" id="jumpPageInput" min="1" value="1" style="width: 65px;">
+                    <button id="jumpPageBtn">Go</button>
+                </div>
+            </div>
+
             <div class="footer">
                 ✅ Click column headers to sort | Click any stat card to auto-filter | 🟡 Yellow rows = expiring within 30 days<br>
                 📊 REMAINING LIFE % (days left) | ⏱️ CONSUMED LIFE % (days used) | 🧩 Pallet count updates instantly with filters.<br>
-                🏷️ Brand dropdown filters exact brand match (case-insensitive) and combines with search & expiry filters.
+                🏷️ Brand dropdown filters exact brand | 📄 Pagination: 30 rows per page (navigate using Previous/Next or jump)
             </div>
         </div>
     </div>
@@ -321,24 +403,26 @@
     <script>
         let originalData = [];
         let filteredData = [];
-        let columns = [];          // final displayed columns after processing and adding life columns
+        let columns = [];
         let sortColumn = "";
         let sortDirection = "asc";
-        let currentPalletColumn = null;
         let fallbackPalletEstimate = false;
+        let currentPalletColumn = null;
         
-        // Filter mode: null, "expired", "expiring_15", "expiring_30", "expiring_60"
+        // Pagination state (30 rows per page)
+        let currentPage = 1;
+        const ROWS_PER_PAGE = 30;
+        
+        // Filter mode
         let expiryFilterMode = null;
-        let activeBrandFilter = "ALL";   // "ALL" or specific brand name (case preserved from selection)
+        let activeBrandFilter = "ALL";
 
-        // ----- REQUIRED COLUMNS (exactly as user requested, plus computed ones) -----
         const REQUIRED_COLUMNS = [
             "BRAND", "PALLET", "BIN_LOCATION", "ITEM_CODES", "LOT_NUMBER", 
             "MAN_DATE", "EXP_DATE", "BARCODE", "CARTON", "AVAILABLE_QTY", 
             "RECEIVE_DATE", "STATUS", "ITEM_DESCRIPTION", "ASN_NO"
         ];
 
-        // Helper: parse date
         function parseDate(dateStr) {
             if (!dateStr || dateStr === "") return null;
             let str = String(dateStr).trim();
@@ -400,14 +484,12 @@
             let consumedPercentage = Math.round((daysPassed / totalDays) * 100);
             if (consumedPercentage > 100) consumedPercentage = 100;
             
-            let remainingText = `${remainingPercentage}% (${daysLeft} days)`;
             let remainingBarClass = "", remainingTextClass = "";
             if (remainingPercentage <= 0) { remainingBarClass = "progress-bar-critical"; remainingTextClass = "self-life-expired"; }
             else if (remainingPercentage <= 20) { remainingBarClass = "progress-bar-critical"; remainingTextClass = "self-life-critical"; }
             else if (remainingPercentage <= 50) { remainingBarClass = "progress-bar-warning"; remainingTextClass = "self-life-warning"; }
             else { remainingBarClass = "progress-bar"; remainingTextClass = "self-life-good"; }
             
-            let consumedText = `${consumedPercentage}% (${daysPassed} days)`;
             let consumedBarClass = "", consumedTextClass = "";
             if (consumedPercentage >= 100) { consumedBarClass = "progress-bar-critical"; consumedTextClass = "consumed-expired"; }
             else if (consumedPercentage >= 80) { consumedBarClass = "progress-bar-critical"; consumedTextClass = "consumed-critical"; }
@@ -415,12 +497,11 @@
             else { consumedBarClass = "progress-bar"; consumedTextClass = "consumed-good"; }
             
             return { 
-                remaining: { text: remainingText, percentage: remainingPercentage, daysLeft, barClass: remainingBarClass, textClass: remainingTextClass },
-                consumed: { text: consumedText, percentage: consumedPercentage, daysUsed: daysPassed, barClass: consumedBarClass, textClass: consumedTextClass }
+                remaining: { text: `${remainingPercentage}% (${daysLeft} days)`, percentage: remainingPercentage, daysLeft, barClass: remainingBarClass, textClass: remainingTextClass },
+                consumed: { text: `${consumedPercentage}% (${daysPassed} days)`, percentage: consumedPercentage, daysUsed: daysPassed, barClass: consumedBarClass, textClass: consumedTextClass }
             };
         }
 
-        // Populate brand dropdown from original dataset (distinct BRAND values)
         function populateBrandFilter() {
             const brandSelect = document.getElementById("brandFilterSelect");
             if (!originalData.length || !columns.length) {
@@ -445,7 +526,6 @@
                 optionsHtml += `<option value="${escapeHtml(brand)}">${escapeHtml(brand)}</option>`;
             }
             brandSelect.innerHTML = optionsHtml;
-            // restore previously selected brand if it still exists (after new upload reset to ALL)
             if (activeBrandFilter !== "ALL" && uniqueBrands.has(activeBrandFilter)) {
                 brandSelect.value = activeBrandFilter;
             } else {
@@ -461,12 +541,9 @@
                 if (m === '<') return '&lt;';
                 if (m === '>') return '&gt;';
                 return m;
-            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-                return c;
             });
         }
 
-        // Unique pallet count
         function computeUniquePalletCountFromData(dataRows, colNames) {
             if (!dataRows.length) return 0;
             let palletColIndex = colNames.findIndex(c => c.toUpperCase() === "PALLET");
@@ -505,16 +582,14 @@
             }
             let uniqueCount = computeUniquePalletCountFromData(filteredData, columns);
             document.getElementById("uniquePalletCount").innerText = uniqueCount;
-            let titleText = fallbackPalletEstimate ? `Estimated from filtered data: ${currentPalletColumn}` : `Unique pallet IDs in filtered view from: ${currentPalletColumn || "pallet column"}`;
             let parent = document.getElementById("uniquePalletCount")?.parentElement?.parentElement;
-            if (parent) parent.setAttribute("title", titleText);
+            if (parent) parent.setAttribute("title", fallbackPalletEstimate ? `Estimated from filtered data: ${currentPalletColumn}` : `Unique pallet IDs in filtered view`);
         }
 
-        // Process uploaded data: keep required columns, add life columns
+        // Process uploaded data
         function processData(rawRows, rawCols) {
             let colIndexMap = {};
             rawCols.forEach((name, idx) => { colIndexMap[name.toUpperCase()] = idx; });
-            
             let finalCols = [];
             let selectedIndices = [];
             for (let req of REQUIRED_COLUMNS) {
@@ -527,26 +602,19 @@
                     selectedIndices.push(-1);
                 }
             }
-            
             let processedData = [];
             for (let row of rawRows) {
                 let newRow = [];
                 for (let i = 0; i < selectedIndices.length; i++) {
                     let idx = selectedIndices[i];
-                    if (idx !== -1 && row[idx] !== undefined && row[idx] !== null) {
-                        newRow.push(row[idx]);
-                    } else {
-                        newRow.push("");
-                    }
+                    if (idx !== -1 && row[idx] !== undefined && row[idx] !== null) newRow.push(row[idx]);
+                    else newRow.push("");
                 }
                 processedData.push(newRow);
             }
-            
             let manDateIndexInFinal = finalCols.indexOf("MAN_DATE");
             let expDateIndexInFinal = finalCols.indexOf("EXP_DATE");
-            
             let finalColumnsWithLife = [...finalCols, "REMAINING_LIFE", "CONSUMED_LIFE"];
-            
             let finalData = [];
             for (let row of processedData) {
                 let manDateStr = (manDateIndexInFinal !== -1) ? row[manDateIndexInFinal] : "";
@@ -555,57 +623,22 @@
                 let newRow = [...row, lifeDisplay.remaining, lifeDisplay.consumed];
                 finalData.push(newRow);
             }
-            
             return { columns: finalColumnsWithLife, data: finalData };
         }
 
-        function prepareExportRow(row, cols) {
-            return row.map((cell, idx) => {
-                let colName = cols[idx];
-                if ((colName === "REMAINING_LIFE" || colName === "CONSUMED_LIFE") && cell && typeof cell === 'object' && cell.text) {
-                    return cell.text;
-                }
-                if (typeof cell === 'object' && cell !== null) return cell.text || JSON.stringify(cell);
-                return cell;
-            });
-        }
-
-        function exportToExcel() {
-            if (!filteredData.length || !columns.length) {
-                alert("No data to export. Please upload an Excel file first.");
-                return;
-            }
-            let exportRows = [columns];
-            for (let row of filteredData) exportRows.push(prepareExportRow(row, columns));
-            let ws = XLSX.utils.aoa_to_sheet(exportRows);
-            ws['!cols'] = columns.map(c => ({ wch: Math.min(25, Math.max(10, c.length)) }));
-            let wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Filtered_Shelf_Life");
-            let now = new Date();
-            let timestamp = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-            XLSX.writeFile(wb, `emirates_logistics_filtered_${timestamp}.xlsx`);
-        }
-
-        // Combined filter: search, expiry mode, brand filter
+        // applyFilters: recalc filteredData, reset page to 1, re-render
         function applyFilters() {
             let searchTermRaw = document.getElementById("searchInput").value.trim();
             let searchTerms = [];
             if (searchTermRaw !== "") {
-                if (searchTermRaw.includes(",")) {
-                    searchTerms = searchTermRaw.split(",").map(s => s.trim().toLowerCase()).filter(s => s);
-                } else {
-                    searchTerms = searchTermRaw.split(/\s+/).map(s => s.trim().toLowerCase()).filter(s => s);
-                }
+                if (searchTermRaw.includes(",")) searchTerms = searchTermRaw.split(",").map(s => s.trim().toLowerCase()).filter(s => s);
+                else searchTerms = searchTermRaw.split(/\s+/).map(s => s.trim().toLowerCase()).filter(s => s);
             }
-            
-            // get current brand filter value from dropdown
             const brandSelect = document.getElementById("brandFilterSelect");
             activeBrandFilter = brandSelect.value;
-            
             const brandColIndex = columns.findIndex(c => c.toUpperCase() === "BRAND");
             
             filteredData = originalData.filter(row => {
-                // expiry filter mode
                 if (expiryFilterMode !== null) {
                     let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
                     let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
@@ -615,27 +648,22 @@
                     if (expiryFilterMode === "expiring_30" && details.status !== "expiring_30") return false;
                     if (expiryFilterMode === "expiring_60" && details.status !== "expiring_60") return false;
                 }
-                
-                // brand filter
                 if (activeBrandFilter !== "ALL" && brandColIndex !== -1) {
                     let rowBrand = row[brandColIndex];
                     let brandVal = (rowBrand !== undefined && rowBrand !== null) ? String(rowBrand).trim() : "";
                     if (brandVal !== activeBrandFilter) return false;
                 }
-                
-                // multi-search filter
                 if (searchTerms.length > 0) {
                     let matchFound = false;
                     for (let i = 0; i < row.length; i++) {
-                        let cellVal = "";
-                        if (typeof row[i] === 'object' && row[i] !== null && row[i].text) cellVal = row[i].text.toLowerCase();
-                        else cellVal = String(row[i] || "").toLowerCase();
+                        let cellVal = (typeof row[i] === 'object' && row[i] !== null && row[i].text) ? row[i].text.toLowerCase() : String(row[i] || "").toLowerCase();
                         if (searchTerms.some(term => cellVal.includes(term))) { matchFound = true; break; }
                     }
                     if (!matchFound) return false;
                 }
                 return true;
             });
+            currentPage = 1;   // reset pagination when filters change
             renderTable();
             highlightActiveStatCard();
         }
@@ -651,7 +679,6 @@
 
         function clearFilters() {
             document.getElementById("searchInput").value = "";
-            // reset brand dropdown to "ALL"
             const brandSelect = document.getElementById("brandFilterSelect");
             if (brandSelect) brandSelect.value = "ALL";
             activeBrandFilter = "ALL";
@@ -685,7 +712,9 @@
             updatePalletCountStat();
         }
 
+        // renderTable with pagination: sort full filteredData, then slice 30 rows
         function renderTable() {
+            if (!columns.length) return;
             let headerHtml = "<tr>";
             columns.forEach(col => {
                 let displayName = col.length > 22 ? col.substring(0,20)+".." : col;
@@ -693,15 +722,22 @@
             });
             headerHtml += "</tr>";
             document.getElementById("tableHeader").innerHTML = headerHtml;
+            
             let tbody = document.getElementById("tableBody");
             tbody.innerHTML = "";
-            if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters.</td></tr>'; updateStats(); return; }
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters.</td></tr>';
+                updateStats();
+                updatePaginationUI(0);
+                return;
+            }
             
-            let sorted = [...filteredData];
+            // Sort a copy of filteredData based on sortColumn
+            let sortedFull = [...filteredData];
             if (sortColumn) {
                 let colIndex = columns.indexOf(sortColumn);
                 if (colIndex !== -1) {
-                    sorted.sort((a,b) => {
+                    sortedFull.sort((a,b) => {
                         let valA = a[colIndex] || "", valB = b[colIndex] || "";
                         if (sortColumn.toUpperCase() === "EXP_DATE") {
                             let dateA = parseDate(valA), dateB = parseDate(valB);
@@ -725,13 +761,19 @@
                     });
                 }
             }
+            
+            const totalRows = sortedFull.length;
+            const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+            const startIdx = (currentPage - 1) * ROWS_PER_PAGE;
+            const endIdx = Math.min(startIdx + ROWS_PER_PAGE, totalRows);
+            const pageData = sortedFull.slice(startIdx, endIdx);
+            
             let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
-            for (let row of sorted) {
+            for (let row of pageData) {
                 let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
                 let details = getExpiryDetails(expDateStr);
-                let rowClass = "";
-                if (details.status === "expired") rowClass = "expired";
-                else if (details.status === "expiring_15" || details.status === "expiring_30") rowClass = "expiring-soon";
+                let rowClass = (details.status === "expired") ? "expired" : ((details.status === "expiring_15" || details.status === "expiring_30") ? "expiring-soon" : "");
                 let tr = document.createElement("tr");
                 tr.className = rowClass;
                 columns.forEach((col, idx) => {
@@ -767,16 +809,45 @@
                 tbody.appendChild(tr);
             }
             updateStats();
+            updatePaginationUI(totalRows);
+            
+            // attach sort handlers
             document.querySelectorAll("th").forEach(th => {
                 th.addEventListener("click", () => {
                     let column = th.getAttribute("data-column");
                     if (sortColumn === column) sortDirection = sortDirection === "asc" ? "desc" : "asc";
                     else { sortColumn = column; sortDirection = "asc"; }
+                    currentPage = 1;
                     renderTable();
                 });
             });
         }
-
+        
+        function updatePaginationUI(totalRows) {
+            const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+            const prevBtn = document.getElementById("prevPageBtn");
+            const nextBtn = document.getElementById("nextPageBtn");
+            const pageInfo = document.getElementById("pageInfo");
+            const jumpInput = document.getElementById("jumpPageInput");
+            pageInfo.innerText = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = (currentPage <= 1);
+            nextBtn.disabled = (currentPage >= totalPages);
+            if (jumpInput) jumpInput.max = totalPages;
+        }
+        
+        function goToPage(pageNum) {
+            const totalRows = filteredData.length;
+            const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE) || 1;
+            let target = Math.min(totalPages, Math.max(1, pageNum));
+            if (target !== currentPage) {
+                currentPage = target;
+                renderTable();
+            }
+        }
+        
+        function nextPage() { goToPage(currentPage + 1); }
+        function prevPage() { goToPage(currentPage - 1); }
+        
         function loadExcelData(arrayBuffer) {
             let workbook = XLSX.read(arrayBuffer, { cellDates: false, defval: "" });
             let firstSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -796,27 +867,14 @@
             originalData = processed.data;
             expiryFilterMode = null;
             document.getElementById("searchInput").value = "";
-            // populate brand dropdown from original data
             populateBrandFilter();
-            // re-apply filters (brand dropdown may have reset to ALL)
+            currentPage = 1;
             applyFilters();
         }
 
-        // Event listeners
-        const uploadArea = document.getElementById("uploadArea");
+        // Event bindings
+        document.getElementById("uploadArea").addEventListener("click", () => document.getElementById("fileInput").click());
         const fileInput = document.getElementById("fileInput");
-        uploadArea.addEventListener("click", () => fileInput.click());
-        uploadArea.addEventListener("dragover", (e) => { e.preventDefault(); uploadArea.style.background = "#e8f0fe"; });
-        uploadArea.addEventListener("dragleave", () => { uploadArea.style.background = "white"; });
-        uploadArea.addEventListener("drop", (e) => {
-            e.preventDefault(); uploadArea.style.background = "white";
-            let file = e.dataTransfer.files[0];
-            if (file && (file.name.endsWith(".xlsx") || file.name.endsWith(".xls") || file.name.endsWith(".csv"))) {
-                let reader = new FileReader();
-                reader.onload = (evt) => loadExcelData(evt.target.result);
-                reader.readAsArrayBuffer(file);
-            } else alert("Please upload an Excel file (.xlsx, .xls, .csv)");
-        });
         fileInput.addEventListener("change", (e) => {
             if (e.target.files[0]) {
                 let reader = new FileReader();
@@ -827,16 +885,29 @@
         document.getElementById("searchInput").addEventListener("input", applyFilters);
         document.getElementById("brandFilterSelect").addEventListener("change", applyFilters);
         document.getElementById("clearFiltersBtn").addEventListener("click", clearFilters);
-        document.getElementById("exportBtn").addEventListener("click", exportToExcel);
-        
-        // Stat card click handlers
+        document.getElementById("exportBtn").addEventListener("click", () => {
+            if (!filteredData.length || !columns.length) alert("No data to export.");
+            else {
+                let exportRows = [columns];
+                for (let row of filteredData) exportRows.push(row.map((cell, idx) => (columns[idx] === "REMAINING_LIFE" || columns[idx] === "CONSUMED_LIFE") && cell?.text ? cell.text : cell));
+                let ws = XLSX.utils.aoa_to_sheet(exportRows);
+                let wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Filtered_Shelf_Life");
+                XLSX.writeFile(wb, `emirates_logistics_filtered_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.xlsx`);
+            }
+        });
         document.getElementById("statTotal").addEventListener("click", () => { expiryFilterMode = null; applyFilters(); });
         document.getElementById("statExpired").addEventListener("click", () => { expiryFilterMode = "expired"; applyFilters(); });
         document.getElementById("statExpiring15").addEventListener("click", () => { expiryFilterMode = "expiring_15"; applyFilters(); });
         document.getElementById("statExpiring30").addEventListener("click", () => { expiryFilterMode = "expiring_30"; applyFilters(); });
         document.getElementById("statExpiring60").addEventListener("click", () => { expiryFilterMode = "expiring_60"; applyFilters(); });
         
-        console.log("Emirates Logistics ready — Brand filter fully integrated.");
+        document.getElementById("prevPageBtn").addEventListener("click", prevPage);
+        document.getElementById("nextPageBtn").addEventListener("click", nextPage);
+        document.getElementById("jumpPageBtn").addEventListener("click", () => {
+            let pageVal = parseInt(document.getElementById("jumpPageInput").value, 10);
+            if (!isNaN(pageVal)) goToPage(pageVal);
+        });
     </script>
 </body>
 </html>
