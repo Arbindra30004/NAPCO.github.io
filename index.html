@@ -14,7 +14,6 @@
             margin: 0;
             padding: 0;
         }
-        /* ========= ANIMATED LOGO ========= */
         .logo-top-bar {
             background: #ffffff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -108,13 +107,11 @@
             .logo-icon-emirates { font-size: 1.8rem; }
         }
 
-        /* ========= MAIN APP ========= */
         .main-app { padding: 20px; }
         .container { max-width: 1500px; margin: 0 auto; }
         h1 { color: #1a3a5c; font-size: 1.8rem; margin-bottom: 5px; }
         .subtitle { color: #5a6e7c; margin-bottom: 20px; font-size: 0.9rem; }
         
-        /* ===== REDUCED UPLOAD BUTTON AREA ===== */
         .upload-area {
             background: white;
             border: 1px dashed #1a3a5c;
@@ -131,21 +128,8 @@
             flex-wrap: wrap;
         }
         .upload-area:hover { background: #e8f0fe; border-color: #0d47a1; transform: translateY(-1px); }
-        .upload-area p {
-            margin: 0;
-            font-weight: 500;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .upload-area small {
-            font-size: 0.7rem;
-            color: #5a6e7c;
-            background: #f0f2f5;
-            padding: 2px 8px;
-            border-radius: 30px;
-        }
+        .upload-area p { margin: 0; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+        .upload-area small { font-size: 0.7rem; color: #5a6e7c; background: #f0f2f5; padding: 2px 8px; border-radius: 30px; }
         .upload-area input { display: none; }
         
         .stats {
@@ -170,32 +154,14 @@
         .stat-card .number { font-size: 1.8rem; font-weight: bold; margin: 8px 0 0; }
         .stat-active { background: #e8f0fe; border-left-width: 6px; }
         
-        /* ======== INCREASED PROMINENCE FOR TOTAL AVAIL. QTY CARD ======== */
         #statQty {
             background: linear-gradient(105deg, #ffffff, #f5fef5);
             border-left: 10px solid #2e7d32;
             box-shadow: 0 6px 14px rgba(60, 125, 50, 0.12);
             transition: all 0.2s ease;
         }
-        #statQty .number {
-            font-size: 0 rem !important;
-            font-weight: 600 !important;
-            color: #1b5e20;
-            text-shadow: 0 1px 4px rgba(60, 155, 70, 0.30);
-            letter-spacing: 0px;
-            margin-top: 6px;
-        }
-        #statQty h3 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #1a3a5c;
-            letter-spacing: 0.5px;
-        }
-        #statQty:hover {
-            transform: scale(1.02) translateY(-4px);
-            background: linear-gradient(145deg, #eaffea, #ffffff);
-            box-shadow: 0 12px 22px rgba(46, 125, 50, 0.25);
-        }
+        #statQty .number { font-size: 2rem !important; font-weight: 700 !important; color: #1b5e20; text-shadow: 0 1px 4px rgba(60, 155, 70, 0.30); }
+        #statQty h3 { font-size: 0.9rem; font-weight: 700; color: #1a3a5c; }
         
         .filters {
             background: white;
@@ -208,39 +174,13 @@
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .filters input {
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            flex: 2;
-            min-width: 200px;
-        }
-        .filters select {
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-            cursor: pointer;
-            min-width: 180px;
-        }
-        .filters button {
-            background: #1a3a5c;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .filters input { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; flex: 2; min-width: 200px; }
+        .filters select { padding: 10px 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: white; cursor: pointer; min-width: 180px; }
+        .filters button { background: #1a3a5c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .filters button:hover { background: #0d2b44; }
-        .export-btn {
-            background: #2e7d32;
-        }
+        .export-btn { background: #2e7d32; }
         .export-btn:hover { background: #1b5e20; }
         
-        /* ========= FIXED SEARCH TERM INSPECTOR PANEL ========= */
         .term-inspector-panel {
             background: #fffaf2;
             border-radius: 20px;
@@ -260,20 +200,8 @@
             border-bottom: 1px solid #ffe0b2;
             padding-bottom: 8px;
         }
-        .inspector-header h3 {
-            margin: 0;
-            color: #e65100;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .term-badges-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 8px;
-        }
+        .inspector-header h3 { margin: 0; color: #e65100; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .term-badges-container { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
         .term-status-card {
             background: white;
             border-radius: 40px;
@@ -285,68 +213,16 @@
             font-size: 0.85rem;
             transition: all 0.1s;
         }
-        .term-status-card.matched {
-            border-left: 5px solid #2e7d32;
-            background: #f1f8e9;
-        }
-        .term-status-card.not-matched {
-            border-left: 5px solid #d32f2f;
-            background: #ffebee;
-        }
-        .term-status-card.filtered-out {
-            border-left: 5px solid #ff9800;
-            background: #fff3e0;
-        }
-        .term-text {
-            font-weight: 700;
-            font-family: monospace;
-            font-size: 0.9rem;
-        }
-        .status-icon {
-            font-size: 1rem;
-        }
-        .remove-term-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: #777;
-            border-radius: 30px;
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.1s;
-        }
-        .remove-term-btn:hover {
-            background: rgba(0,0,0,0.05);
-            color: #d32f2f;
-            transform: scale(1.05);
-        }
-        .inspector-actions {
-            margin-top: 14px;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .inspector-btn {
-            background: #ffe0b2;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 32px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.1s;
-            color: #bf360c;
-        }
-        .inspector-btn:hover {
-            background: #ffcc80;
-        }
-        .hide-panel {
-            display: none;
-        }
+        .term-status-card.matched { border-left: 5px solid #2e7d32; background: #f1f8e9; }
+        .term-status-card.not-matched { border-left: 5px solid #d32f2f; background: #ffebee; }
+        .term-status-card.filtered-out { border-left: 5px solid #ff9800; background: #fff3e0; }
+        .term-text { font-weight: 700; font-family: monospace; font-size: 0.9rem; }
+        .remove-term-btn { background: transparent; border: none; cursor: pointer; font-size: 1.1rem; color: #777; border-radius: 30px; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; transition: 0.1s; }
+        .remove-term-btn:hover { background: rgba(0,0,0,0.05); color: #d32f2f; transform: scale(1.05); }
+        .inspector-actions { margin-top: 14px; display: flex; gap: 12px; flex-wrap: wrap; }
+        .inspector-btn { background: #ffe0b2; border: none; padding: 6px 16px; border-radius: 32px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.1s; color: #bf360c; }
+        .inspector-btn:hover { background: #ffcc80; }
+        .hide-panel { display: none; }
         
         .table-wrapper {
             background: white;
@@ -354,60 +230,25 @@
             overflow-x: auto;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-            min-width: 800px;
-        }
-        th {
-            background: #1a3a5c;
-            color: white;
-            padding: 12px 8px;
-            cursor: pointer;
-            position: sticky;
-            top: 0;
-            white-space: nowrap;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+        th { background: #1a3a5c; color: white; padding: 12px 8px; cursor: pointer; position: sticky; top: 0; white-space: nowrap; }
         th:hover { background: #2c4e74; }
         td { padding: 8px; border-bottom: 1px solid #e0e0e0; white-space: nowrap; }
         tr:hover { background: #f9f9f9; }
         .expired { background-color: #ffebee !important; border-left: 4px solid #d32f2f; }
         .expiring-soon { background-color: #fff8e1 !important; border-left: 4px solid #ffa000; }
-        
         .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
         .status-Available { background: #e8f5e9; color: #2e7d32; }
         .status-Damaged { background: #ffebee; color: #c62828; }
         .status-Hold { background: #fff3e0; color: #ef6c00; }
-        .status-E { background: #fce4ec; color: #ad1457; }
         
         .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
         .no-data { text-align: center; padding: 40px; color: #999; }
-        @media (max-width: 700px) { .main-app { padding: 10px; } th, td { font-size: 11px; padding: 6px 4px; } .term-status-card { padding: 4px 12px 4px 16px; } #statQty .number { font-size: 2rem !important; } }
-        
-        .self-life-good, .consumed-good { color: #2e7d32; font-weight: 500; }
-        .self-life-warning, .consumed-warning { color: #ef6c00; font-weight: 500; }
-        .self-life-critical, .consumed-critical { color: #c62828; font-weight: 500; }
-        .self-life-expired, .consumed-expired { color: #b71c1c; font-weight: bold; }
-        
-        .progress-bar-container {
-            display: inline-block;
-            width: 70px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
+        .progress-bar-container { display: inline-block; width: 70px; background: #e0e0e0; border-radius: 10px; margin-right: 8px; vertical-align: middle; }
         .progress-bar { height: 8px; border-radius: 10px; background: #2e7d32; }
         .progress-bar-warning { background: #ef6c00; }
         .progress-bar-critical { background: #c62828; }
-        .brand-dropdown-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #1a3a5c;
-            margin-right: 4px;
-        }
-
+        
         .pagination-container {
             display: flex;
             justify-content: center;
@@ -417,522 +258,80 @@
             margin-bottom: 10px;
             flex-wrap: wrap;
         }
-        .pagination-btn {
-            background: #1a3a5c;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
-            min-width: 90px;
-        }
-        .pagination-btn:hover:not(:disabled) {
-            background: #0d2b44;
-            transform: translateY(-1px);
-        }
-        .pagination-btn:disabled {
-            background: #b0bec5;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .page-info {
-            background: #eef2f7;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-weight: 600;
-            color: #1a3a5c;
-            font-size: 0.9rem;
-        }
-        .pagination-jump {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 40px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .pagination-jump input {
-            width: 60px;
-            padding: 6px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            text-align: center;
-            font-weight: bold;
-        }
-        .pagination-jump button {
-            background: #c9a03d;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .pagination-jump button:hover {
-            background: #b38f2f;
-        }
+        .pagination-btn { background: #1a3a5c; border: none; color: white; padding: 8px 16px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85rem; min-width: 90px; }
+        .pagination-btn:hover:not(:disabled) { background: #0d2b44; transform: translateY(-1px); }
+        .pagination-btn:disabled { background: #b0bec5; cursor: not-allowed; opacity: 0.6; }
+        .page-info { background: #eef2f7; padding: 6px 16px; border-radius: 40px; font-weight: 600; color: #1a3a5c; font-size: 0.9rem; }
+        .pagination-jump { display: flex; align-items: center; gap: 6px; background: white; padding: 4px 12px; border-radius: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .pagination-jump input { width: 60px; padding: 6px; border-radius: 20px; border: 1px solid #ccc; text-align: center; font-weight: bold; }
+        .pagination-jump button { background: #c9a03d; border: none; padding: 4px 12px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer; }
+        .export-note { font-size: 11px; margin-left: 8px; background: #e8f5e9; border-radius: 20px; padding: 2px 8px; color: #2e7d32; }
+        @media (max-width: 700px) { .main-app { padding: 10px; } th, td { font-size: 11px; } }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="logo-top-bar">
-        <div class="logo-container">
-            <div class="animated-logo" aria-label="Emirates Logistics logo">
-                <div class="logo-icon-emirates"><i class="fas fa-cargo-ship"></i></div>
-                <div class="logo-text-emirates">
-                    <span class="logo-main-emirates">EMIRATES LOGISTICS</span>
-                    <span class="logo-sub-emirates">WHAREHOUSE-05 COMMON CLIENTS</span>
-                </div>
-            </div>
-            <div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Term Inspector</div>
+    <div class="logo-top-bar"><div class="logo-container"><div class="animated-logo"><div class="logo-icon-emirates"><i class="fas fa-cargo-ship"></i></div><div class="logo-text-emirates"><span class="logo-main-emirates">EMIRATES LOGISTICS</span><span class="logo-sub-emirates">WHAREHOUSE-05 COMMON CLIENTS</span></div></div><div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Term Inspector</div></div></div>
+    <div class="main-app"><div class="container"><h1>NAPCO_SHELF_LIFE_TRACKER</h1><div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring &lt;30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Pallet Count | 🏷️ Brand dropdown | 🔎 SEARCH TERM INSPECTOR shows which terms are missing/hidden</div>
+        <div class="upload-area" id="uploadArea"><p>📂 CLICK TO UPLOAD EXCEL</p><small>.xlsx, .xls, .csv</small><input type="file" id="fileInput" accept=".xlsx, .xls, .csv"></div>
+        <div class="stats" id="statsContainer">
+            <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products</h3><div class="number" id="totalRows">0</div></div>
+            <div class="stat-card" id="statExpired" style="border-left-color:#d32f2f"><h3>❌ Expired</h3><div class="number" id="expiredCount">0</div></div>
+            <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring &lt;15 days</h3><div class="number" id="expiring15Count">0</div></div>
+            <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring &lt;30 days</h3><div class="number" id="expiring30Count">0</div></div>
+            <div class="stat-card" id="statExpiring60" style="border-left-color:#ffd54f"><h3>⚠️ Expiring &lt;60 days</h3><div class="number" id="expiring60Count">0</div></div>
+            <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 TOTAL AVAIL. QTY</h3><div class="number" id="totalQty">0</div></div>
+            <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT</h3><div class="number" id="uniquePalletCount">0</div></div>
         </div>
-    </div>
-
-    <div class="main-app">
-        <div class="container">
-            <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
-            <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Pallet Count | 🏷️ Brand dropdown | 🔎 SEARCH TERM INSPECTOR shows exactly which terms are NOT FOUND in current results</div>
-
-            <!-- COMPACT UPLOAD AREA (size reduced) -->
-            <div class="upload-area" id="uploadArea">
-                <p>📂 CLICK TO UPLOAD EXCEL</p>
-                <small>.xlsx, .xls, .csv</small>
-                <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-            </div>
-
-            <div class="stats" id="statsContainer">
-                <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products</h3><div class="number" id="totalRows">0</div></div>
-                <div class="stat-card" id="statExpired" style="border-left-color:#d32f2f"><h3>❌ Expired</h3><div class="number" id="expiredCount">0</div></div>
-                <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring <15 days</h3><div class="number" id="expiring15Count">0</div></div>
-                <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring <30 days</h3><div class="number" id="expiring30Count">0</div></div>
-                <div class="stat-card" id="statExpiring60" style="border-left-color:#ffd54f"><h3>⚠️ Expiring <60 days</h3><div class="number" id="expiring60Count">0</div></div>
-                <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 TOTAL AVAIL. QTY</h3><div class="number" id="totalQty">0</div></div>
-                <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT</h3><div class="number" id="uniquePalletCount">0</div></div>
-            </div>
-
-            <div class="filters">
-                <input type="text" id="searchInput" placeholder="🔍" autocomplete="off">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span>
-                    <select id="brandFilterSelect">
-                        <option value="ALL">🏷️ All Brands</option>
-                    </select>
-                </div>
-                <button id="clearFiltersBtn">Clear All Filters</button>
-                <button id="exportBtn" class="export-btn">📎 Export Filtered Data (Excel)</button>
-            </div>
-
-            <!-- FIXED SEARCH TERM INSPECTOR -->
-            <div id="termInspectorPanel" class="term-inspector-panel hide-panel">
-                <div class="inspector-header">
-                    <h3><i class="fas fa-search-plus"></i> 🔎 SEARCH TERM STATUS (per term)</h3>
-                    <button id="closeInspectorBtn" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#e65100;">&times;</button>
-                </div>
-                <div id="termStatusContainer" class="term-badges-container"></div>
-                <div class="inspector-actions" id="inspectorActions"></div>
-            </div>
-
-            <div class="table-wrapper">
-                <table id="dataTable">
-                    <thead id="tableHeader"></thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-
-            <div class="pagination-container" id="paginationControls">
-                <button class="pagination-btn" id="prevPageBtn" disabled>◀ Previous</button>
-                <span class="page-info" id="pageInfo">Page 1 of 1</span>
-                <button class="pagination-btn" id="nextPageBtn" disabled>Next ▶</button>
-                <div class="pagination-jump">
-                    <span>Go to page</span>
-                    <input type="number" id="jumpPageInput" min="1" value="1" style="width: 65px;">
-                    <button id="jumpPageBtn">Go</button>
-                </div>
-            </div>
-
-            <div class="footer">
-                ✅ Click column headers to sort | 🔍 <strong>SEARCH TERM INSPECTOR</strong> shows which terms are missing/hidden
-            </div>
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍" autocomplete="off">
+            <div style="display: flex; align-items: center; gap: 8px;"><span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span><select id="brandFilterSelect"><option value="ALL">🏷️ All Brands</option></select></div>
+            <button id="clearFiltersBtn">Clear All Filters</button>
+            <button id="exportBtn" class="export-btn">📎 Export data <span class="export-note">🎄</span></button>
         </div>
-    </div>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+        <div id="termInspectorPanel" class="term-inspector-panel hide-panel"><div class="inspector-header"><h3><i class="fas fa-search-plus"></i> 🔎 SEARCH TERM STATUS (per term)</h3><button id="closeInspectorBtn" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#e65100;">&times;</button></div><div id="termStatusContainer" class="term-badges-container"></div><div class="inspector-actions" id="inspectorActions"></div></div>
+        <div class="table-wrapper"><table id="dataTable"><thead id="tableHeader"></thead><tbody id="tableBody"></tbody></table></div>
+        <div class="pagination-container" id="paginationControls"><button class="pagination-btn" id="prevPageBtn" disabled>◀ Previous</button><span class="page-info" id="pageInfo">Page 1 of 1</span><button class="pagination-btn" id="nextPageBtn" disabled>Next ▶</button><div class="pagination-jump"><span>Go to page</span><input type="number" id="jumpPageInput" min="1" value="1" style="width: 65px;"><button id="jumpPageBtn">Go</button></div></div>
+        <div class="footer">✅ Click column headers to sort | 🔍 <strong>SEARCH TERM INSPECTOR</strong> shows which terms are missing/hidden | 📎 Export always includes ALL filtered rows (ignores pagination) respecting current sort order</div>
+    </div></div>
     <script>
-        let originalData = [];
-        let filteredData = [];
-        let columns = [];
-        let sortColumn = "";
-        let sortDirection = "asc";
-        let fallbackPalletEstimate = false;
+        let originalData = [], filteredData = [], columns = [];
+        let sortColumn = "", sortDirection = "asc";
         let currentPage = 1;
         const ROWS_PER_PAGE = 30;
         let expiryFilterMode = null;
         let activeBrandFilter = "ALL";
 
-        const REQUIRED_COLUMNS = [
-            "BRAND", "PALLET", "BIN_LOCATION", "ITEM_CODES", "LOT_NUMBER", 
-            "MAN_DATE", "EXP_DATE", "BARCODE", "CARTON", "AVAILABLE_QTY", 
-            "RECEIVE_DATE", "STATUS", "ITEM_DESCRIPTION", "ASN_NO"
-        ];
+        const REQUIRED_COLUMNS = ["BRAND","PALLET","BIN_LOCATION","ITEM_CODES","LOT_NUMBER","MAN_DATE","EXP_DATE","BARCODE","CARTON","AVAILABLE_QTY","RECEIVE_DATE","STATUS","ITEM_DESCRIPTION","ASN_NO"];
 
-        function parseDate(dateStr) {
-            if (!dateStr || dateStr === "") return null;
-            let str = String(dateStr).trim();
-            let d = new Date(str);
-            if (!isNaN(d.getTime())) return d;
-            let parts = str.split(/[\/\-]/);
-            if (parts.length === 3) {
-                let day = parseInt(parts[0], 10), month = parseInt(parts[1], 10), year = parseInt(parts[2], 10);
-                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                    let testDate = new Date(year, month-1, day);
-                    if (testDate.getFullYear() === year && testDate.getMonth() === month-1) return testDate;
-                }
-            }
-            parts = str.split(/\//);
-            if (parts.length === 3) {
-                let month = parseInt(parts[0], 10), day = parseInt(parts[1], 10), year = parseInt(parts[2], 10);
-                if (!isNaN(month) && !isNaN(day) && !isNaN(year) && month <= 12 && day <= 31) {
-                    let testDate = new Date(year, month-1, day);
-                    if (testDate.getFullYear() === year) return testDate;
-                }
-            }
-            return null;
-        }
-
-        function daysBetween(date1, date2) {
-            if (!date1 || !date2) return null;
-            return Math.round((date2 - date1) / (1000 * 60 * 60 * 24));
-        }
-
-        function getExpiryDetails(expDateStr) {
-            if (!expDateStr || expDateStr === "") return { status: "unknown", daysLeft: null };
-            let expDate = parseDate(expDateStr);
-            if (!expDate) return { status: "unknown", daysLeft: null };
-            let today = new Date(); today.setHours(0,0,0,0);
-            let diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
-            if (diffDays < 0) return { status: "expired", daysLeft: diffDays };
-            if (diffDays <= 15) return { status: "expiring_15", daysLeft: diffDays };
-            if (diffDays <= 30) return { status: "expiring_30", daysLeft: diffDays };
-            if (diffDays <= 60) return { status: "expiring_60", daysLeft: diffDays };
-            return { status: "good", daysLeft: diffDays };
-        }
-
-        function getLifeDisplay(manDateStr, expDateStr) {
-            let manDate = parseDate(manDateStr);
-            let expDate = parseDate(expDateStr);
-            if (!manDate || !expDate) return { remaining: { text: "-", percentage: null, barClass: "", textClass: "" }, consumed: { text: "-", percentage: null, barClass: "", textClass: "" } };
-            let totalDays = daysBetween(manDate, expDate);
-            let today = new Date(); today.setHours(0,0,0,0);
-            let daysPassed = daysBetween(manDate, today);
-            if (daysPassed < 0) daysPassed = 0;
-            let daysLeft = totalDays - daysPassed;
-            if (daysLeft < 0) daysLeft = 0;
-            let remainingPercentage = Math.round((daysLeft / totalDays) * 100);
-            let consumedPercentage = Math.round((daysPassed / totalDays) * 100);
-            if (consumedPercentage > 100) consumedPercentage = 100;
-            let remainingBarClass = "", remainingTextClass = "";
-            if (remainingPercentage <= 0) { remainingBarClass = "progress-bar-critical"; remainingTextClass = "self-life-expired"; }
-            else if (remainingPercentage <= 20) { remainingBarClass = "progress-bar-critical"; remainingTextClass = "self-life-critical"; }
-            else if (remainingPercentage <= 50) { remainingBarClass = "progress-bar-warning"; remainingTextClass = "self-life-warning"; }
-            else { remainingBarClass = "progress-bar"; remainingTextClass = "self-life-good"; }
-            let consumedBarClass = "", consumedTextClass = "";
-            if (consumedPercentage >= 100) { consumedBarClass = "progress-bar-critical"; consumedTextClass = "consumed-expired"; }
-            else if (consumedPercentage >= 80) { consumedBarClass = "progress-bar-critical"; consumedTextClass = "consumed-critical"; }
-            else if (consumedPercentage >= 50) { consumedBarClass = "progress-bar-warning"; consumedTextClass = "consumed-warning"; }
-            else { consumedBarClass = "progress-bar"; consumedTextClass = "consumed-good"; }
-            return { remaining: { text: `${remainingPercentage}% (${daysLeft} days)`, percentage: remainingPercentage, daysLeft, barClass: remainingBarClass, textClass: remainingTextClass }, consumed: { text: `${consumedPercentage}% (${daysPassed} days)`, percentage: consumedPercentage, daysUsed: daysPassed, barClass: consumedBarClass, textClass: consumedTextClass } };
-        }
-
-        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
-
-        function termExistsInDataset(term, dataset) {
-            if (!dataset.length) return false;
-            const lowerTerm = term.toLowerCase();
-            for (let row of dataset) {
-                for (let cell of row) {
-                    let str = (cell !== undefined && cell !== null) ? String(cell).toLowerCase() : "";
-                    if (str.includes(lowerTerm)) return true;
-                }
-            }
-            return false;
-        }
-
-        function updateTermInspector() {
-            const panel = document.getElementById("termInspectorPanel");
-            const container = document.getElementById("termStatusContainer");
-            const actionsDiv = document.getElementById("inspectorActions");
-            const searchRaw = document.getElementById("searchInput").value.trim();
-            let searchTerms = [];
-            if (searchRaw !== "") {
-                if (searchRaw.includes(",")) searchTerms = searchRaw.split(",").map(s => s.trim().toLowerCase()).filter(s => s);
-                else searchTerms = searchRaw.split(/\s+/).map(s => s.trim().toLowerCase()).filter(s => s);
-            }
-            if (searchTerms.length === 0) {
-                panel.classList.add("hide-panel");
-                return;
-            }
-            panel.classList.remove("hide-panel");
-            let termsHtml = "";
-            for (let term of searchTerms) {
-                const foundInFiltered = termExistsInDataset(term, filteredData);
-                const existsInOriginal = termExistsInDataset(term, originalData);
-                let statusClass = "", statusIcon = "", statusText = "";
-                if (foundInFiltered) {
-                    statusClass = "matched";
-                    statusIcon = "✅";
-                    statusText = "Matched in current results";
-                } else if (existsInOriginal) {
-                    statusClass = "filtered-out";
-                    statusIcon = "⚠️";
-                    statusText = "Exists in data but hidden by brand/expiry filters";
-                } else {
-                    statusClass = "not-matched";
-                    statusIcon = "❌";
-                    statusText = "Not found in any uploaded data";
-                }
-                termsHtml += `
-                    <div class="term-status-card ${statusClass}">
-                        <span class="term-text">🔍 "${escapeHtml(term)}"</span>
-                        <span class="status-icon" title="${statusText}">${statusIcon}</span>
-                        <button class="remove-term-btn" data-term="${escapeHtml(term)}" title="Remove this search term">✖</button>
-                    </div>
-                `;
-            }
-            container.innerHTML = termsHtml;
-            document.querySelectorAll(".remove-term-btn").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const termToRemove = btn.getAttribute("data-term");
-                    let currentSearch = document.getElementById("searchInput").value;
-                    let termsArr = [];
-                    if (currentSearch.includes(",")) termsArr = currentSearch.split(",").map(t => t.trim());
-                    else termsArr = currentSearch.split(/\s+/).filter(t => t.trim());
-                    const newTerms = termsArr.filter(t => t.toLowerCase() !== termToRemove);
-                    document.getElementById("searchInput").value = newTerms.join(", ");
-                    applyFilters();
-                });
-            });
-            actionsDiv.innerHTML = `
-                <button class="inspector-btn" id="clearAllSearchTermsBtn"><i class="fas fa-times-circle"></i> Clear all search terms</button>
-                <button class="inspector-btn" id="removeUnmatchedTermsBtn"><i class="fas fa-filter"></i> Remove unmatched terms only</button>
-            `;
-            document.getElementById("clearAllSearchTermsBtn")?.addEventListener("click", () => {
-                document.getElementById("searchInput").value = "";
-                applyFilters();
-            });
-            document.getElementById("removeUnmatchedTermsBtn")?.addEventListener("click", () => {
-                let currentSearch = document.getElementById("searchInput").value;
-                let termsArr = [];
-                if (currentSearch.includes(",")) termsArr = currentSearch.split(",").map(t => t.trim());
-                else termsArr = currentSearch.split(/\s+/).filter(t => t.trim());
-                const matchedTerms = [];
-                for (let term of termsArr) {
-                    if (termExistsInDataset(term, filteredData)) matchedTerms.push(term);
-                }
-                document.getElementById("searchInput").value = matchedTerms.join(", ");
-                applyFilters();
-            });
-        }
-
-        function populateBrandFilter() {
-            const brandSelect = document.getElementById("brandFilterSelect");
-            if (!originalData.length || !columns.length) { brandSelect.innerHTML = '<option value="ALL">🏷️ All Brands</option>'; return; }
-            const brandColIndex = columns.findIndex(c => c.toUpperCase() === "BRAND");
-            if (brandColIndex === -1) { brandSelect.innerHTML = '<option value="ALL">🏷️ All Brands (No BRAND column)</option>'; return; }
-            const uniqueBrands = new Set();
-            for (let row of originalData) {
-                let brandVal = row[brandColIndex];
-                if (brandVal !== undefined && brandVal !== null && String(brandVal).trim() !== "") uniqueBrands.add(String(brandVal).trim());
-            }
-            let optionsHtml = '<option value="ALL">🏷️ All Brands</option>';
-            Array.from(uniqueBrands).sort().forEach(b => { optionsHtml += `<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`; });
-            brandSelect.innerHTML = optionsHtml;
-            if (activeBrandFilter !== "ALL" && uniqueBrands.has(activeBrandFilter)) brandSelect.value = activeBrandFilter;
-            else { brandSelect.value = "ALL"; activeBrandFilter = "ALL"; }
-        }
-
-        function computeUniquePalletCountFromData(dataRows, colNames) {
-            if (!dataRows.length) return 0;
-            let palletColIndex = colNames.findIndex(c => c.toUpperCase() === "PALLET");
-            if (palletColIndex !== -1) {
-                let distinctVals = new Set();
-                for (let row of dataRows) { let val = row[palletColIndex]; if (val && String(val).trim()) distinctVals.add(String(val).trim()); }
-                fallbackPalletEstimate = false; return distinctVals.size;
-            } else {
-                let qtyColIndex = colNames.findIndex(c => c.toUpperCase() === "AVAILABLE_QTY");
-                if (qtyColIndex !== -1) {
-                    let totalUnits = 0;
-                    for (let row of dataRows) { let qty = parseFloat(row[qtyColIndex]); if (!isNaN(qty)) totalUnits += qty; }
-                    fallbackPalletEstimate = true; return Math.ceil(totalUnits / 50);
-                } else return 0;
-            }
-        }
-
-        function updatePalletCountStat() { document.getElementById("uniquePalletCount").innerText = (!filteredData.length || !columns.length) ? "0" : computeUniquePalletCountFromData(filteredData, columns); }
-
-        function processData(rawRows, rawCols) {
-            let colIndexMap = {}; rawCols.forEach((name, idx) => { colIndexMap[name.toUpperCase()] = idx; });
-            let finalCols = [], selectedIndices = [];
-            for (let req of REQUIRED_COLUMNS) {
-                let upperReq = req.toUpperCase();
-                if (colIndexMap.hasOwnProperty(upperReq)) { finalCols.push(req); selectedIndices.push(colIndexMap[upperReq]); }
-                else { finalCols.push(req); selectedIndices.push(-1); }
-            }
-            let processedData = [];
-            for (let row of rawRows) {
-                let newRow = [];
-                for (let i=0; i<selectedIndices.length; i++) {
-                    let idx = selectedIndices[i];
-                    if (idx !== -1 && row[idx] !== undefined && row[idx] !== null) newRow.push(row[idx]);
-                    else newRow.push("");
-                }
-                processedData.push(newRow);
-            }
-            let manDateIdx = finalCols.indexOf("MAN_DATE"), expDateIdx = finalCols.indexOf("EXP_DATE");
-            let finalColumnsWithLife = [...finalCols, "REMAINING_LIFE", "CONSUMED_LIFE"];
-            let finalData = [];
-            for (let row of processedData) {
-                let manStr = (manDateIdx !== -1) ? row[manDateIdx] : "", expStr = (expDateIdx !== -1) ? row[expDateIdx] : "";
-                let life = getLifeDisplay(manStr, expStr);
-                finalData.push([...row, life.remaining, life.consumed]);
-            }
-            return { columns: finalColumnsWithLife, data: finalData };
-        }
-
-        function applyFilters() {
-            let searchRaw = document.getElementById("searchInput").value.trim();
-            let searchTerms = [];
-            if (searchRaw !== "") {
-                if (searchRaw.includes(",")) searchTerms = searchRaw.split(",").map(s => s.trim().toLowerCase()).filter(s => s);
-                else searchTerms = searchRaw.split(/\s+/).map(s => s.trim().toLowerCase()).filter(s => s);
-            }
-            const brandSelect = document.getElementById("brandFilterSelect");
-            activeBrandFilter = brandSelect.value;
-            const brandColIndex = columns.findIndex(c => c.toUpperCase() === "BRAND");
-            filteredData = originalData.filter(row => {
-                if (expiryFilterMode !== null) {
-                    let expColIndex = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
-                    let expDateStr = expColIndex !== -1 ? row[expColIndex] : "";
-                    let details = getExpiryDetails(expDateStr);
-                    if (expiryFilterMode === "expired" && details.status !== "expired") return false;
-                    if (expiryFilterMode === "expiring_15" && details.status !== "expiring_15") return false;
-                    if (expiryFilterMode === "expiring_30" && details.status !== "expiring_30") return false;
-                    if (expiryFilterMode === "expiring_60" && details.status !== "expiring_60") return false;
-                }
-                if (activeBrandFilter !== "ALL" && brandColIndex !== -1) {
-                    let rowBrand = row[brandColIndex] ? String(row[brandColIndex]).trim() : "";
-                    if (rowBrand !== activeBrandFilter) return false;
-                }
-                if (searchTerms.length) {
-                    for (let i=0; i<row.length; i++) {
-                        let cellVal = (typeof row[i] === 'object' && row[i]?.text) ? row[i].text.toLowerCase() : String(row[i] || "").toLowerCase();
-                        if (searchTerms.some(term => cellVal.includes(term))) return true;
-                    }
-                    return false;
-                }
-                return true;
-            });
-            currentPage = 1;
-            renderTable();
-            highlightActiveStatCard();
-            updateTermInspector();
-        }
-
-        function highlightActiveStatCard() {
-            document.querySelectorAll(".stat-card").forEach(c => c.classList.remove("stat-active"));
-            if (expiryFilterMode === "expired") document.getElementById("statExpired")?.classList.add("stat-active");
-            else if (expiryFilterMode === "expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active");
-            else if (expiryFilterMode === "expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active");
-            else if (expiryFilterMode === "expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active");
-            else document.getElementById("statTotal")?.classList.add("stat-active");
-        }
-
-        function clearFilters() {
-            document.getElementById("searchInput").value = "";
-            const brandSelect = document.getElementById("brandFilterSelect");
-            if (brandSelect) brandSelect.value = "ALL";
-            activeBrandFilter = "ALL";
-            expiryFilterMode = null;
-            applyFilters();
-        }
-
-        function updateStats() {
-            let total = filteredData.length, expired=0, expiring15=0, expiring30=0, expiring60=0, totalQty=0;
-            let expIdx = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
-            let qtyIdx = columns.findIndex(c => c.toUpperCase() === "AVAILABLE_QTY");
-            filteredData.forEach(row => {
-                let details = getExpiryDetails(expIdx !== -1 ? row[expIdx] : "");
-                if (details.status === "expired") expired++;
-                else if (details.status === "expiring_15") expiring15++;
-                else if (details.status === "expiring_30") expiring30++;
-                else if (details.status === "expiring_60") expiring60++;
-                if (qtyIdx !== -1) { let q = parseFloat(row[qtyIdx]); if(!isNaN(q)) totalQty += q; }
-            });
-            document.getElementById("totalRows").innerText = total;
-            document.getElementById("expiredCount").innerText = expired;
-            document.getElementById("expiring15Count").innerText = expiring15;
-            document.getElementById("expiring30Count").innerText = expiring30;
-            document.getElementById("expiring60Count").innerText = expiring60;
-            document.getElementById("totalQty").innerText = Math.round(totalQty);
-            updatePalletCountStat();
-        }
-
-        function renderTable() {
-            if (!columns.length) return;
-            let headerHtml = "<tr>"; columns.forEach(col => { headerHtml += `<th data-column="${col}">${col.length>22?col.substring(0,20)+"..":col} ↕️</th>`; }); headerHtml += "</tr>";
-            document.getElementById("tableHeader").innerHTML = headerHtml;
-            let tbody = document.getElementById("tableBody"); tbody.innerHTML = "";
-            if (filteredData.length === 0) { tbody.innerHTML = '<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters. See term inspector above.</td></tr>'; updateStats(); updatePaginationUI(0); return; }
-            let sortedFull = [...filteredData];
-            if (sortColumn) {
-                let idx = columns.indexOf(sortColumn);
-                if (idx !== -1) sortedFull.sort((a,b) => {
-                    if (sortColumn.toUpperCase() === "EXP_DATE") { let da=parseDate(a[idx]), db=parseDate(b[idx]); if(da&&db) return sortDirection==="asc"?da-db:db-da; return 0; }
-                    if (sortColumn === "REMAINING_LIFE") return sortDirection==="asc"? (a[idx]?.percentage||0)-(b[idx]?.percentage||0) : (b[idx]?.percentage||0)-(a[idx]?.percentage||0);
-                    if (sortColumn === "CONSUMED_LIFE") return sortDirection==="asc"? (a[idx]?.percentage||0)-(b[idx]?.percentage||0) : (b[idx]?.percentage||0)-(a[idx]?.percentage||0);
-                    let va=String(a[idx]||"").toLowerCase(), vb=String(b[idx]||"").toLowerCase();
-                    return sortDirection==="asc"? (va<vb?-1:va>vb?1:0) : (va>vb?-1:va<vb?1:0);
-                });
-            }
-            let totalRows = sortedFull.length, totalPages = Math.ceil(totalRows/ROWS_PER_PAGE)||1;
-            if(currentPage>totalPages) currentPage=totalPages;
-            let start=(currentPage-1)*ROWS_PER_PAGE, end=Math.min(start+ROWS_PER_PAGE, totalRows);
-            let pageData = sortedFull.slice(start,end);
-            let expColIdx = columns.findIndex(c => c.toUpperCase() === "EXP_DATE");
-            for(let row of pageData){
-                let expDateStr = expColIdx!==-1?row[expColIdx]:"";
-                let details = getExpiryDetails(expDateStr);
-                let rowClass = details.status==="expired"?"expired":(details.status==="expiring_15"||details.status==="expiring_30"?"expiring-soon":"");
-                let tr = document.createElement("tr"); tr.className=rowClass;
-                columns.forEach((col,idx)=>{
-                    let val = row[idx]!==undefined?row[idx]:"";
-                    let td = document.createElement("td");
-                    if(col.toUpperCase()==="STATUS") td.innerHTML = `<span class="status-badge status-${val}">${escapeHtml(val)}</span>`;
-                    else if(col==="REMAINING_LIFE" && val?.percentage!==null) td.innerHTML = `<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">📊 ${escapeHtml(val.text)}</span></div>`;
-                    else if(col==="CONSUMED_LIFE" && val?.percentage!==null) td.innerHTML = `<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">⏱️ ${escapeHtml(val.text)}</span></div>`;
-                    else if(col.toUpperCase()==="EXP_DATE") td.innerHTML = details.status==="expired"?`<span style="color:#c62828;">⚠️ EXPIRED: ${escapeHtml(val)}</span>`:(details.status==="expiring_15"?`<span style="color:#ef6c00;">⚠️ <15 days: ${escapeHtml(val)}</span>`:escapeHtml(val));
-                    else td.innerText = val;
-                    tr.appendChild(td);
-                });
-                tbody.appendChild(tr);
-            }
-            updateStats(); updatePaginationUI(totalRows);
-            document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{ let col=th.getAttribute("data-column"); if(sortColumn===col) sortDirection=sortDirection==="asc"?"desc":"asc"; else { sortColumn=col; sortDirection="asc"; } currentPage=1; renderTable(); }));
-        }
+        function parseDate(dateStr) { if (!dateStr) return null; let d = new Date(dateStr); if (!isNaN(d.getTime())) return d; let parts = String(dateStr).trim().split(/[\/\-]/); if (parts.length===3) { let day=parseInt(parts[0],10),month=parseInt(parts[1],10),year=parseInt(parts[2],10); if(!isNaN(day)&&!isNaN(month)&&!isNaN(year)) { let test=new Date(year,month-1,day); if(test.getFullYear()===year&&test.getMonth()===month-1) return test; } } return null; }
+        function daysBetween(a,b) { if(!a||!b) return null; return Math.round((b-a)/(1000*60*60*24)); }
+        function getExpiryDetails(expDateStr) { if(!expDateStr) return {status:"unknown",daysLeft:null}; let exp=parseDate(expDateStr); if(!exp) return {status:"unknown",daysLeft:null}; let today=new Date(); today.setHours(0,0,0,0); let diff=Math.ceil((exp-today)/(1000*60*60*24)); if(diff<0) return {status:"expired",daysLeft:diff}; if(diff<=15) return {status:"expiring_15",daysLeft:diff}; if(diff<=30) return {status:"expiring_30",daysLeft:diff}; if(diff<=60) return {status:"expiring_60",daysLeft:diff}; return {status:"good",daysLeft:diff}; }
+        function getLifeDisplay(manDateStr,expDateStr){ let man=parseDate(manDateStr),exp=parseDate(expDateStr); if(!man||!exp) return {remaining:{text:"-",percentage:null,barClass:"",textClass:""},consumed:{text:"-",percentage:null,barClass:"",textClass:""}}; let total=daysBetween(man,exp); let today=new Date();today.setHours(0,0,0,0); let passed=daysBetween(man,today); if(passed<0) passed=0; let left=total-passed; if(left<0) left=0; let remPct=Math.round((left/total)*100),consPct=Math.min(100,Math.round((passed/total)*100)); let remBar="progress-bar",remText="self-life-good"; if(remPct<=0){remBar="progress-bar-critical";remText="self-life-expired";}else if(remPct<=20){remBar="progress-bar-critical";remText="self-life-critical";}else if(remPct<=50){remBar="progress-bar-warning";remText="self-life-warning";} let consBar="progress-bar",consText="consumed-good"; if(consPct>=100){consBar="progress-bar-critical";consText="consumed-expired";}else if(consPct>=80){consBar="progress-bar-critical";consText="consumed-critical";}else if(consPct>=50){consBar="progress-bar-warning";consText="consumed-warning";} return {remaining:{text:`${remPct}% (${left} days)`,percentage:remPct,daysLeft:left,barClass:remBar,textClass:remText},consumed:{text:`${consPct}% (${passed} days)`,percentage:consPct,daysUsed:passed,barClass:consBar,textClass:consText}}; }
+        function escapeHtml(s){if(!s)return "";return s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+        function termExistsInDataset(term,dataset){ if(!dataset.length)return false; let lower=term.toLowerCase(); for(let row of dataset) for(let cell of row) if(String(cell!==undefined?cell:"").toLowerCase().includes(lower)) return true; return false; }
+        function updateTermInspector(){ let searchRaw=document.getElementById("searchInput").value.trim(); let terms=[]; if(searchRaw){ if(searchRaw.includes(",")) terms=searchRaw.split(",").map(s=>s.trim().toLowerCase()).filter(s=>s); else terms=searchRaw.split(/\s+/).map(s=>s.trim().toLowerCase()).filter(s=>s); } let panel=document.getElementById("termInspectorPanel"),container=document.getElementById("termStatusContainer"),actionsDiv=document.getElementById("inspectorActions"); if(terms.length===0){panel.classList.add("hide-panel");return;} panel.classList.remove("hide-panel"); let html=""; for(let term of terms){ let foundInFiltered=termExistsInDataset(term,filteredData),existsInOriginal=termExistsInDataset(term,originalData); let statusClass="",icon="",txt=""; if(foundInFiltered){statusClass="matched";icon="✅";txt="Matched in current results";} else if(existsInOriginal){statusClass="filtered-out";icon="⚠️";txt="Exists but hidden by brand/expiry filters";} else{statusClass="not-matched";icon="❌";txt="Not found in any uploaded data";} html+=`<div class="term-status-card ${statusClass}"><span class="term-text">🔍 "${escapeHtml(term)}"</span><span class="status-icon" title="${txt}">${icon}</span><button class="remove-term-btn" data-term="${escapeHtml(term)}" title="Remove this search term">✖</button></div>`; } container.innerHTML=html; document.querySelectorAll(".remove-term-btn").forEach(btn=>btn.addEventListener("click",(e)=>{ let termToRemove=btn.getAttribute("data-term"); let curr=document.getElementById("searchInput").value; let arr=curr.includes(",")?curr.split(",").map(t=>t.trim()):curr.split(/\s+/).filter(t=>t.trim()); let newArr=arr.filter(t=>t.toLowerCase()!==termToRemove); document.getElementById("searchInput").value=newArr.join(", "); applyFilters(); })); actionsDiv.innerHTML=`<button class="inspector-btn" id="clearAllSearchTermsBtn"><i class="fas fa-times-circle"></i> Clear all search terms</button><button class="inspector-btn" id="removeUnmatchedTermsBtn"><i class="fas fa-filter"></i> Remove unmatched terms only</button>`; document.getElementById("clearAllSearchTermsBtn")?.addEventListener("click",()=>{document.getElementById("searchInput").value="";applyFilters();}); document.getElementById("removeUnmatchedTermsBtn")?.addEventListener("click",()=>{ let curr=document.getElementById("searchInput").value; let arr=curr.includes(",")?curr.split(",").map(t=>t.trim()):curr.split(/\s+/).filter(t=>t.trim()); let matched=arr.filter(term=>termExistsInDataset(term,filteredData)); document.getElementById("searchInput").value=matched.join(", "); applyFilters();}); }
+        function populateBrandFilter(){ if(!originalData.length||!columns.length){document.getElementById("brandFilterSelect").innerHTML='<option value="ALL">🏷️ All Brands</option>';return;} let idx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); if(idx===-1){document.getElementById("brandFilterSelect").innerHTML='<option value="ALL">🏷️ All Brands</option>';return;} let brands=new Set(); for(let row of originalData){ let val=row[idx]; if(val!==undefined&&val!==null&&String(val).trim()!=="") brands.add(String(val).trim());} let opts='<option value="ALL">🏷️ All Brands</option>'; Array.from(brands).sort().forEach(b=>opts+=`<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`); document.getElementById("brandFilterSelect").innerHTML=opts; if(activeBrandFilter!=="ALL"&&brands.has(activeBrandFilter)) document.getElementById("brandFilterSelect").value=activeBrandFilter; else {document.getElementById("brandFilterSelect").value="ALL"; activeBrandFilter="ALL";} }
+        function computeUniquePalletCount(data,cols){ let palletIdx=cols.findIndex(c=>c.toUpperCase()==="PALLET"); if(palletIdx!==-1){ let vals=new Set(); for(let row of data){ let v=row[palletIdx]; if(v&&String(v).trim()) vals.add(String(v).trim());} return vals.size;} else{ let qtyIdx=cols.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); if(qtyIdx!==-1){ let total=0; for(let row of data){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) total+=q;} return Math.ceil(total/50);} return 0;} }
+        function updatePalletStat(){ document.getElementById("uniquePalletCount").innerText=(!filteredData.length||!columns.length)?0:computeUniquePalletCount(filteredData,columns); }
+        function processData(rawRows,rawCols){ let colMap={}; rawCols.forEach((n,i)=>colMap[n.toUpperCase()]=i); let finalCols=[],indices=[]; for(let req of REQUIRED_COLUMNS){ let up=req.toUpperCase(); if(colMap.hasOwnProperty(up)){finalCols.push(req);indices.push(colMap[up]);} else{finalCols.push(req);indices.push(-1);}} let processed=[]; for(let row of rawRows){ let newRow=[]; for(let i=0;i<indices.length;i++){ let idx=indices[i]; if(idx!==-1&&row[idx]!==undefined&&row[idx]!==null) newRow.push(row[idx]); else newRow.push("");} processed.push(newRow);} let manIdx=finalCols.indexOf("MAN_DATE"),expIdx=finalCols.indexOf("EXP_DATE"); let finalColsWithLife=[...finalCols,"REMAINING_LIFE","CONSUMED_LIFE"]; let data=[]; for(let row of processed){ let man=manIdx!==-1?row[manIdx]:"", exp=expIdx!==-1?row[expIdx]:""; let life=getLifeDisplay(man,exp); data.push([...row,life.remaining,life.consumed]);} return {columns:finalColsWithLife,data}; }
+        function applyFilters(){ let searchRaw=document.getElementById("searchInput").value.trim(); let terms=[]; if(searchRaw){ if(searchRaw.includes(",")) terms=searchRaw.split(",").map(s=>s.trim().toLowerCase()).filter(s=>s); else terms=searchRaw.split(/\s+/).map(s=>s.trim().toLowerCase()).filter(s=>s);} let brandSelect=document.getElementById("brandFilterSelect"); activeBrandFilter=brandSelect.value; let brandIdx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); filteredData=originalData.filter(row=>{ if(expiryFilterMode!==null){ let expCol=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let expStr=expCol!==-1?row[expCol]:""; let det=getExpiryDetails(expStr); if(expiryFilterMode==="expired"&&det.status!=="expired") return false; if(expiryFilterMode==="expiring_15"&&det.status!=="expiring_15") return false; if(expiryFilterMode==="expiring_30"&&det.status!=="expiring_30") return false; if(expiryFilterMode==="expiring_60"&&det.status!=="expiring_60") return false;} if(activeBrandFilter!=="ALL"&&brandIdx!==-1){ let brandVal=row[brandIdx]?String(row[brandIdx]).trim():""; if(brandVal!==activeBrandFilter) return false;} if(terms.length){ for(let i=0;i<row.length;i++){ let cellVal=String(row[i]!==undefined?row[i]:"").toLowerCase(); if(terms.some(t=>cellVal.includes(t))) return true;} return false;} return true;}); currentPage=1; renderTable(); highlightActiveStatCard(); updateTermInspector(); }
+        function highlightActiveStatCard(){ document.querySelectorAll(".stat-card").forEach(c=>c.classList.remove("stat-active")); if(expiryFilterMode==="expired") document.getElementById("statExpired")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active"); else document.getElementById("statTotal")?.classList.add("stat-active"); }
+        function clearFilters(){ document.getElementById("searchInput").value=""; document.getElementById("brandFilterSelect").value="ALL"; activeBrandFilter="ALL"; expiryFilterMode=null; applyFilters(); }
+        function updateStats(){ let total=filteredData.length,expired=0,exp15=0,exp30=0,exp60=0,totalQty=0; let expIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let qtyIdx=columns.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); for(let row of filteredData){ let det=getExpiryDetails(expIdx!==-1?row[expIdx]:""); if(det.status==="expired") expired++; else if(det.status==="expiring_15") exp15++; else if(det.status==="expiring_30") exp30++; else if(det.status==="expiring_60") exp60++; if(qtyIdx!==-1){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) totalQty+=q;}} document.getElementById("totalRows").innerText=total; document.getElementById("expiredCount").innerText=expired; document.getElementById("expiring15Count").innerText=exp15; document.getElementById("expiring30Count").innerText=exp30; document.getElementById("expiring60Count").innerText=exp60; document.getElementById("totalQty").innerText=Math.round(totalQty); updatePalletStat(); }
+        function getComparator(col,direction){ let idx=columns.indexOf(col); return (a,b)=>{ if(col.toUpperCase()==="EXP_DATE"){ let da=parseDate(a[idx]),db=parseDate(b[idx]); if(da&&db) return direction==="asc"?da-db:db-da; return 0;} if(col==="REMAINING_LIFE"){ let pa=a[idx]?.percentage||0,pb=b[idx]?.percentage||0; return direction==="asc"?pa-pb:pb-pa;} if(col==="CONSUMED_LIFE"){ let ca=a[idx]?.percentage||0,cb=b[idx]?.percentage||0; return direction==="asc"?ca-cb:cb-ca;} let va=String(a[idx]||"").toLowerCase(),vb=String(b[idx]||"").toLowerCase(); if(va<vb) return direction==="asc"?-1:1; if(va>vb) return direction==="asc"?1:-1; return 0;}; }
+        function getSortedData(data){ if(!sortColumn||!columns.includes(sortColumn)) return [...data]; let sorted=[...data]; let comp=getComparator(sortColumn,sortDirection); sorted.sort(comp); return sorted; }
+        function renderTable(){ if(!columns.length) return; let headerHtml="</tr>"; columns.forEach(col=>{headerHtml+=`<th data-column="${col}">${col.length>22?col.substring(0,20)+"..":col} ↕️</th>`;}); headerHtml+="</tr>"; document.getElementById("tableHeader").innerHTML=headerHtml; let tbody=document.getElementById("tableBody"); tbody.innerHTML=""; if(filteredData.length===0){ tbody.innerHTML='<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters. See term inspector above.</td></tr>'; updateStats(); updatePaginationUI(0); return; } let sortedFull=getSortedData(filteredData); let totalRows=sortedFull.length,totalPages=Math.ceil(totalRows/ROWS_PER_PAGE)||1; if(currentPage>totalPages) currentPage=totalPages; let start=(currentPage-1)*ROWS_PER_PAGE,end=Math.min(start+ROWS_PER_PAGE,totalRows); let pageData=sortedFull.slice(start,end); let expColIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); for(let row of pageData){ let expDateStr=expColIdx!==-1?row[expColIdx]:""; let details=getExpiryDetails(expDateStr); let rowClass=details.status==="expired"?"expired":(details.status==="expiring_15"||details.status==="expiring_30"?"expiring-soon":""); let tr=document.createElement("tr"); tr.className=rowClass; columns.forEach((col,idx)=>{ let val=row[idx]!==undefined?row[idx]:""; let td=document.createElement("td"); if(col.toUpperCase()==="STATUS") td.innerHTML=`<span class="status-badge status-${val}">${escapeHtml(val)}</span>`; else if(col==="REMAINING_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">📊 ${escapeHtml(val.text)}</span></div>`; else if(col==="CONSUMED_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">⏱️ ${escapeHtml(val.text)}</span></div>`; else if(col.toUpperCase()==="EXP_DATE") td.innerHTML=details.status==="expired"?`<span style="color:#c62828;">⚠️ EXPIRED: ${escapeHtml(val)}</span>`:(details.status==="expiring_15"?`<span style="color:#ef6c00;">⚠️ <15 days: ${escapeHtml(val)}</span>`:escapeHtml(val)); else td.innerText=val; tr.appendChild(td); }); tbody.appendChild(tr); } updateStats(); updatePaginationUI(totalRows); document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{ let col=th.getAttribute("data-column"); if(sortColumn===col) sortDirection=sortDirection==="asc"?"desc":"asc"; else{sortColumn=col;sortDirection="asc";} currentPage=1; renderTable();})); }
         function updatePaginationUI(totalRows){ let totalPages=Math.ceil(totalRows/ROWS_PER_PAGE)||1; document.getElementById("prevPageBtn").disabled=currentPage<=1; document.getElementById("nextPageBtn").disabled=currentPage>=totalPages; document.getElementById("pageInfo").innerText=`Page ${currentPage} of ${totalPages}`; document.getElementById("jumpPageInput").max=totalPages; }
         function goToPage(p){ let totalPages=Math.ceil(filteredData.length/ROWS_PER_PAGE)||1; let target=Math.min(totalPages,Math.max(1,p)); if(target!==currentPage){ currentPage=target; renderTable(); } }
         function loadExcelData(arrayBuffer){ let wb=XLSX.read(arrayBuffer,{cellDates:false,defval:""}); let sheet=wb.Sheets[wb.SheetNames[0]]; let rows=XLSX.utils.sheet_to_json(sheet,{header:1,defval:""}); if(!rows||rows.length<2){alert("Empty file");return;} let rawCols=rows[0].map(c=>String(c||"").trim()).filter(c=>c); let rawData=[]; for(let i=1;i<rows.length;i++){ let row=[]; for(let j=0;j<rawCols.length;j++) row.push(rows[i][j]!==undefined?rows[i][j]:""); rawData.push(row); } let proc=processData(rawData,rawCols); columns=proc.columns; originalData=proc.data; expiryFilterMode=null; document.getElementById("searchInput").value=""; populateBrandFilter(); currentPage=1; applyFilters(); }
-        
         document.getElementById("uploadArea").addEventListener("click",()=>document.getElementById("fileInput").click());
-        document.getElementById("fileInput").addEventListener("change",(e)=>{ if(e.target.files[0]){ let reader=new FileReader(); reader.onload=ev=>loadExcelData(ev.target.result); reader.readAsArrayBuffer(e.target.files[0]); } });
+        document.getElementById("fileInput").addEventListener("change",(e)=>{if(e.target.files[0]){let reader=new FileReader();reader.onload=ev=>loadExcelData(ev.target.result);reader.readAsArrayBuffer(e.target.files[0]);}});
         document.getElementById("searchInput").addEventListener("input",applyFilters);
         document.getElementById("brandFilterSelect").addEventListener("change",applyFilters);
         document.getElementById("clearFiltersBtn").addEventListener("click",clearFilters);
-        document.getElementById("exportBtn").addEventListener("click",()=>{ if(!filteredData.length||!columns.length) alert("No data"); else { let expRows=[columns]; for(let row of filteredData) expRows.push(row.map((c,i)=>(columns[i]==="REMAINING_LIFE"||columns[i]==="CONSUMED_LIFE")&&c?.text?c.text:c)); let ws=XLSX.utils.aoa_to_sheet(expRows); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Filtered_Shelf_Life"); XLSX.writeFile(wb,`emirates_export_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.xlsx`); } });
+        document.getElementById("exportBtn").addEventListener("click",()=>{ if(!filteredData.length||!columns.length) alert("No filtered data to export"); else { let dataToExport=getSortedData(filteredData); let exportRows=[columns]; for(let row of dataToExport){ let exportRow=row.map((val,i)=>{ if((columns[i]==="REMAINING_LIFE"||columns[i]==="CONSUMED_LIFE")&&val&&typeof val==="object"&&val.text) return val.text; return val; }); exportRows.push(exportRow); } let ws=XLSX.utils.aoa_to_sheet(exportRows); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Filtered_Shelf_Life_ALL"); XLSX.writeFile(wb,`emirates_export_filtered_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.xlsx`); alert(`✅ Exported ${dataToExport.length} filtered rows (all pages, sort order applied).`); } });
         document.getElementById("statTotal").addEventListener("click",()=>{ expiryFilterMode=null; applyFilters(); });
         document.getElementById("statExpired").addEventListener("click",()=>{ expiryFilterMode="expired"; applyFilters(); });
         document.getElementById("statExpiring15").addEventListener("click",()=>{ expiryFilterMode="expiring_15"; applyFilters(); });
