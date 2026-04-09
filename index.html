@@ -110,26 +110,47 @@
 
         /* ========= MAIN APP ========= */
         .main-app { padding: 20px; }
-        .container { max-width: 1600px; margin: 0 auto; }
+        .container { max-width: 1500px; margin: 0 auto; }
         h1 { color: #1a3a5c; font-size: 1.8rem; margin-bottom: 5px; }
         .subtitle { color: #5a6e7c; margin-bottom: 20px; font-size: 0.9rem; }
         
+        /* ===== REDUCED UPLOAD BUTTON AREA ===== */
         .upload-area {
             background: white;
-            border: 2px dashed #1a3a5c;
-            border-radius: 16px;
-            padding: 30px;
+            border: 1px dashed #1a3a5c;
+            border-radius: 12px;
+            padding: 12px 20px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
-        .upload-area:hover { background: #e8f0fe; border-color: #0d47a1; }
+        .upload-area:hover { background: #e8f0fe; border-color: #0d47a1; transform: translateY(-1px); }
+        .upload-area p {
+            margin: 0;
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .upload-area small {
+            font-size: 0.7rem;
+            color: #5a6e7c;
+            background: #f0f2f5;
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
         .upload-area input { display: none; }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 15px;
             margin-bottom: 25px;
         }
@@ -148,6 +169,33 @@
         .stat-card h3 { margin: 0; font-size: 0.8rem; color: #5a6e7c; }
         .stat-card .number { font-size: 1.8rem; font-weight: bold; margin: 8px 0 0; }
         .stat-active { background: #e8f0fe; border-left-width: 6px; }
+        
+        /* ======== INCREASED PROMINENCE FOR TOTAL AVAIL. QTY CARD ======== */
+        #statQty {
+            background: linear-gradient(105deg, #ffffff, #f5fef5);
+            border-left: 10px solid #2e7d32;
+            box-shadow: 0 6px 14px rgba(60, 125, 50, 0.12);
+            transition: all 0.2s ease;
+        }
+        #statQty .number {
+            font-size: 0 rem !important;
+            font-weight: 600 !important;
+            color: #1b5e20;
+            text-shadow: 0 1px 4px rgba(60, 155, 70, 0.30);
+            letter-spacing: 0px;
+            margin-top: 6px;
+        }
+        #statQty h3 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #1a3a5c;
+            letter-spacing: 0.5px;
+        }
+        #statQty:hover {
+            transform: scale(1.02) translateY(-4px);
+            background: linear-gradient(145deg, #eaffea, #ffffff);
+            box-shadow: 0 12px 22px rgba(46, 125, 50, 0.25);
+        }
         
         .filters {
             background: white;
@@ -192,7 +240,7 @@
         }
         .export-btn:hover { background: #1b5e20; }
         
-        /* ========= FIXED SEARCH TERM INSPECTOR PANEL (always visible when search active) ========= */
+        /* ========= FIXED SEARCH TERM INSPECTOR PANEL ========= */
         .term-inspector-panel {
             background: #fffaf2;
             border-radius: 20px;
@@ -335,7 +383,7 @@
         
         .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
         .no-data { text-align: center; padding: 40px; color: #999; }
-        @media (max-width: 700px) { .main-app { padding: 10px; } th, td { font-size: 11px; padding: 6px 4px; } .term-status-card { padding: 4px 12px 4px 16px; } }
+        @media (max-width: 700px) { .main-app { padding: 10px; } th, td { font-size: 11px; padding: 6px 4px; } .term-status-card { padding: 4px 12px 4px 16px; } #statQty .number { font-size: 2rem !important; } }
         
         .self-life-good, .consumed-good { color: #2e7d32; font-weight: 500; }
         .self-life-warning, .consumed-warning { color: #ef6c00; font-weight: 500; }
@@ -437,7 +485,7 @@
                 <div class="logo-icon-emirates"><i class="fas fa-cargo-ship"></i></div>
                 <div class="logo-text-emirates">
                     <span class="logo-main-emirates">EMIRATES LOGISTICS</span>
-                    <span class="logo-sub-emirates">Global Freight · Smart Supply Chain</span>
+                    <span class="logo-sub-emirates">WHAREHOUSE-05 COMMON CLIENTS</span>
                 </div>
             </div>
             <div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Term Inspector</div>
@@ -449,10 +497,11 @@
             <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
             <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring <30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Pallet Count | 🏷️ Brand dropdown | 🔎 SEARCH TERM INSPECTOR shows exactly which terms are NOT FOUND in current results</div>
 
+            <!-- COMPACT UPLOAD AREA (size reduced) -->
             <div class="upload-area" id="uploadArea">
-                <p>📂 CLICK AND UPLOAD EXCEL FILE</p>
+                <p>📂 CLICK TO UPLOAD EXCEL</p>
+                <small>.xlsx, .xls, .csv</small>
                 <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-                <small>COMMON WH05 - auto detects columns</small>
             </div>
 
             <div class="stats" id="statsContainer">
@@ -461,12 +510,12 @@
                 <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring <15 days</h3><div class="number" id="expiring15Count">0</div></div>
                 <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring <30 days</h3><div class="number" id="expiring30Count">0</div></div>
                 <div class="stat-card" id="statExpiring60" style="border-left-color:#ffd54f"><h3>⚠️ Expiring <60 days</h3><div class="number" id="expiring60Count">0</div></div>
-                <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 Total Avail. Qty</h3><div class="number" id="totalQty">0</div></div>
-                <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT (filtered)</h3><div class="number" id="uniquePalletCount">0</div></div>
+                <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 TOTAL AVAIL. QTY</h3><div class="number" id="totalQty">0</div></div>
+                <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT</h3><div class="number" id="uniquePalletCount">0</div></div>
             </div>
 
             <div class="filters">
-                <input type="text" id="searchInput" placeholder="🔍 Multi-search: 'apple, banana' or 'pallet123 lotA' (comma or space) — each term analyzed below" autocomplete="off">
+                <input type="text" id="searchInput" placeholder="🔍" autocomplete="off">
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span>
                     <select id="brandFilterSelect">
@@ -477,18 +526,14 @@
                 <button id="exportBtn" class="export-btn">📎 Export Filtered Data (Excel)</button>
             </div>
 
-            <!-- FIXED SEARCH TERM INSPECTOR: shows per-term availability (even when results exist) -->
+            <!-- FIXED SEARCH TERM INSPECTOR -->
             <div id="termInspectorPanel" class="term-inspector-panel hide-panel">
                 <div class="inspector-header">
                     <h3><i class="fas fa-search-plus"></i> 🔎 SEARCH TERM STATUS (per term)</h3>
                     <button id="closeInspectorBtn" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#e65100;">&times;</button>
                 </div>
-                <div id="termStatusContainer" class="term-badges-container">
-                    <!-- dynamic term cards will appear here -->
-                </div>
-                <div class="inspector-actions" id="inspectorActions">
-                    <!-- quick actions -->
-                </div>
+                <div id="termStatusContainer" class="term-badges-container"></div>
+                <div class="inspector-actions" id="inspectorActions"></div>
             </div>
 
             <div class="table-wrapper">
@@ -510,9 +555,7 @@
             </div>
 
             <div class="footer">
-                ✅ Click column headers to sort | Click stat cards for expiry filter | 🟡 Yellow rows = expiring within 30 days<br>
-                📊 REMAINING LIFE % | ⏱️ CONSUMED LIFE % | 🧩 Pallet count updates instantly | 🏷️ Brand dropdown filters<br>
-                🔍 <strong>SEARCH TERM INSPECTOR</strong> – When you search multiple terms, each term is evaluated: ✅ matched in current results, ❌ not found (never in data), or ⚠️ exists but hidden by brand/expiry filters. Remove any term with the ❌ button.
+                ✅ Click column headers to sort | 🔍 <strong>SEARCH TERM INSPECTOR</strong> shows which terms are missing/hidden
             </div>
         </div>
     </div>
@@ -607,7 +650,6 @@
 
         function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
 
-        // Helper: check if term exists in ANY row of given dataset (all columns)
         function termExistsInDataset(term, dataset) {
             if (!dataset.length) return false;
             const lowerTerm = term.toLowerCase();
@@ -620,7 +662,6 @@
             return false;
         }
 
-        // Update the term inspector panel based on current search terms, filteredData, originalData and active filters
         function updateTermInspector() {
             const panel = document.getElementById("termInspectorPanel");
             const container = document.getElementById("termStatusContainer");
@@ -638,7 +679,6 @@
             panel.classList.remove("hide-panel");
             let termsHtml = "";
             for (let term of searchTerms) {
-                // Check if term exists in filteredData (current results)
                 const foundInFiltered = termExistsInDataset(term, filteredData);
                 const existsInOriginal = termExistsInDataset(term, originalData);
                 let statusClass = "", statusIcon = "", statusText = "";
@@ -664,7 +704,6 @@
                 `;
             }
             container.innerHTML = termsHtml;
-            // attach remove handlers
             document.querySelectorAll(".remove-term-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     const termToRemove = btn.getAttribute("data-term");
@@ -800,7 +839,7 @@
             currentPage = 1;
             renderTable();
             highlightActiveStatCard();
-            updateTermInspector();   // show per-term status always when search active
+            updateTermInspector();
         }
 
         function highlightActiveStatCard() {
