@@ -109,28 +109,73 @@
 
         .main-app { padding: 20px; }
         .container { max-width: 1500px; margin: 0 auto; }
+        
+        /* NEW top bar: upload left + total qty right */
+        .top-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .upload-btn-modern {
+            background: #1a3a5c;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .upload-btn-modern:hover {
+            background: #0d2b44;
+            transform: translateY(-2px);
+        }
+        .total-qty-top {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+            border-radius: 60px;
+            padding: 8px 24px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
+            border-left: 6px solid #2e7d32;
+        }
+        .total-qty-top .label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1b5e20;
+            letter-spacing: 0.5px;
+        }
+        .total-qty-top .value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #1b5e20;
+            line-height: 1;
+        }
+        .total-qty-top .sub {
+            font-size: 0.7rem;
+            color: #558b2f;
+            font-weight: 500;
+        }
+        @media (max-width: 550px) {
+            .top-actions-bar { flex-direction: column; align-items: stretch; }
+            .total-qty-top { justify-content: center; }
+        }
+
         h1 { color: #1a3a5c; font-size: 1.8rem; margin-bottom: 5px; }
         .subtitle { color: #5a6e7c; margin-bottom: 20px; font-size: 0.9rem; }
-        
-        .upload-area {
-            background: white;
-            border: 1px dashed #1a3a5c;
-            border-radius: 12px;
-            padding: 12px 20px;
-            text-align: center;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .upload-area:hover { background: #e8f0fe; border-color: #0d47a1; transform: translateY(-1px); }
-        .upload-area p { margin: 0; font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
-        .upload-area small { font-size: 0.7rem; color: #5a6e7c; background: #f0f2f5; padding: 2px 8px; border-radius: 30px; }
-        .upload-area input { display: none; }
         
         .stats {
             display: grid;
@@ -153,15 +198,6 @@
         .stat-card h3 { margin: 0; font-size: 0.8rem; color: #5a6e7c; }
         .stat-card .number { font-size: 1.8rem; font-weight: bold; margin: 8px 0 0; }
         .stat-active { background: #e8f0fe; border-left-width: 6px; }
-        
-        #statQty {
-            background: linear-gradient(105deg, #ffffff, #f5fef5);
-            border-left: 10px solid #2e7d32;
-            box-shadow: 0 6px 14px rgba(60, 125, 50, 0.12);
-            transition: all 0.2s ease;
-        }
-        #statQty .number { font-size: 2rem !important; font-weight: 700 !important; color: #1b5e20; text-shadow: 0 1px 4px rgba(60, 155, 70, 0.30); }
-        #statQty h3 { font-size: 0.9rem; font-weight: 700; color: #1a3a5c; }
         
         .filters {
             background: white;
@@ -273,19 +309,34 @@
 </head>
 <body>
     <div class="logo-top-bar"><div class="logo-container"><div class="animated-logo"><div class="logo-icon-emirates"><i class="fas fa-cargo-ship"></i></div><div class="logo-text-emirates"><span class="logo-main-emirates">EMIRATES LOGISTICS</span><span class="logo-sub-emirates">WHAREHOUSE-05 COMMON CLIENTS</span></div></div><div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Term Inspector</div></div></div>
-    <div class="main-app"><div class="container"><h1>NAPCO_SHELF_LIFE_TRACKER</h1><div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring &lt;30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Pallet Count | 🏷️ Brand dropdown | 🔎 SEARCH TERM INSPECTOR shows which terms are missing/hidden</div>
-        <div class="upload-area" id="uploadArea"><p>📂 CLICK TO UPLOAD EXCEL</p><small>.xlsx, .xls, .csv</small><input type="file" id="fileInput" accept=".xlsx, .xls, .csv"></div>
+    <div class="main-app"><div class="container">
+        <!-- NEW TOP ROW: Upload button left + TOTAL QTY right -->
+        <div class="top-actions-bar">
+            <button id="modernUploadBtn" class="upload-btn-modern"><i class="fas fa-cloud-upload-alt"></i> 📂 Upload Excel</button>
+            <div class="total-qty-top">
+                <span class="label"><i class="fas fa-boxes"></i> TOTAL AVAIL. QTY</span>
+                <span class="value" id="topTotalQty">0</span>
+                <span class="sub">units</span>
+            </div>
+        </div>
+        <!-- hidden file input -->
+        <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" style="display:none;">
+        
+        <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
+        <div class="subtitle">🔴 Red = Expired | 🟡 Yellow = Expiring &lt;30 days | 📊 Remaining Life % | ⏱️ Consumed Life % | 🧩 Pallet Count | 🏷️ Brand dropdown | 🔎 SEARCH TERM INSPECTOR shows which terms are missing/hidden</div>
+        
+        <!-- STATS ROW (without TOTAL QTY card, moved to top) -->
         <div class="stats" id="statsContainer">
             <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products</h3><div class="number" id="totalRows">0</div></div>
             <div class="stat-card" id="statExpired" style="border-left-color:#d32f2f"><h3>❌ Expired</h3><div class="number" id="expiredCount">0</div></div>
             <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring &lt;15 days</h3><div class="number" id="expiring15Count">0</div></div>
             <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring &lt;30 days</h3><div class="number" id="expiring30Count">0</div></div>
             <div class="stat-card" id="statExpiring60" style="border-left-color:#ffd54f"><h3>⚠️ Expiring &lt;60 days</h3><div class="number" id="expiring60Count">0</div></div>
-            <div class="stat-card" id="statQty" style="border-left-color:#2e7d32"><h3>📦 TOTAL AVAIL. QTY</h3><div class="number" id="totalQty">0</div></div>
             <div class="stat-card" id="statPallet" style="border-left-color:#c9a03d"><h3>🪵 PALLET COUNT</h3><div class="number" id="uniquePalletCount">0</div></div>
         </div>
+        
         <div class="filters">
-            <input type="text" id="searchInput" placeholder="🔍" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="🔍 Search terms (comma or space separated)" autocomplete="off">
             <div style="display: flex; align-items: center; gap: 8px;"><span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span><select id="brandFilterSelect"><option value="ALL">🏷️ All Brands</option></select></div>
             <button id="clearFiltersBtn">Clear All Filters</button>
             <button id="exportBtn" class="export-btn">📎 Export data <span class="export-note">🎄</span></button>
@@ -315,47 +366,38 @@
         function populateBrandFilter(){ if(!originalData.length||!columns.length){document.getElementById("brandFilterSelect").innerHTML='<option value="ALL">🏷️ All Brands</option>';return;} let idx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); if(idx===-1){document.getElementById("brandFilterSelect").innerHTML='<option value="ALL">🏷️ All Brands</option>';return;} let brands=new Set(); for(let row of originalData){ let val=row[idx]; if(val!==undefined&&val!==null&&String(val).trim()!=="") brands.add(String(val).trim());} let opts='<option value="ALL">🏷️ All Brands</option>'; Array.from(brands).sort().forEach(b=>opts+=`<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`); document.getElementById("brandFilterSelect").innerHTML=opts; if(activeBrandFilter!=="ALL"&&brands.has(activeBrandFilter)) document.getElementById("brandFilterSelect").value=activeBrandFilter; else {document.getElementById("brandFilterSelect").value="ALL"; activeBrandFilter="ALL";} }
         function computeUniquePalletCount(data,cols){ let palletIdx=cols.findIndex(c=>c.toUpperCase()==="PALLET"); if(palletIdx!==-1){ let vals=new Set(); for(let row of data){ let v=row[palletIdx]; if(v&&String(v).trim()) vals.add(String(v).trim());} return vals.size;} else{ let qtyIdx=cols.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); if(qtyIdx!==-1){ let total=0; for(let row of data){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) total+=q;} return Math.ceil(total/50);} return 0;} }
         function updatePalletStat(){ document.getElementById("uniquePalletCount").innerText=(!filteredData.length||!columns.length)?0:computeUniquePalletCount(filteredData,columns); }
+        
+        // update top-right total QTY display
+        function updateTopTotalQty(){ let totalQty=0; let qtyIdx=columns.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); if(qtyIdx!==-1){ for(let row of filteredData){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) totalQty+=q;}} document.getElementById("topTotalQty").innerText=Math.round(totalQty); }
+        
         function processData(rawRows,rawCols){ let colMap={}; rawCols.forEach((n,i)=>colMap[n.toUpperCase()]=i); let finalCols=[],indices=[]; for(let req of REQUIRED_COLUMNS){ let up=req.toUpperCase(); if(colMap.hasOwnProperty(up)){finalCols.push(req);indices.push(colMap[up]);} else{finalCols.push(req);indices.push(-1);}} let processed=[]; for(let row of rawRows){ let newRow=[]; for(let i=0;i<indices.length;i++){ let idx=indices[i]; if(idx!==-1&&row[idx]!==undefined&&row[idx]!==null) newRow.push(row[idx]); else newRow.push("");} processed.push(newRow);} let manIdx=finalCols.indexOf("MAN_DATE"),expIdx=finalCols.indexOf("EXP_DATE"); let finalColsWithLife=[...finalCols,"REMAINING_LIFE","CONSUMED_LIFE"]; let data=[]; for(let row of processed){ let man=manIdx!==-1?row[manIdx]:"", exp=expIdx!==-1?row[expIdx]:""; let life=getLifeDisplay(man,exp); data.push([...row,life.remaining,life.consumed]);} return {columns:finalColsWithLife,data}; }
         
-        // FIX: detect and skip title row that contains "WH05_COMMON_SOH_Detailed_ReportWH05" in first column
         function loadExcelData(arrayBuffer){
             let wb = XLSX.read(arrayBuffer, {cellDates: false, defval: ""});
             let sheet = wb.Sheets[wb.SheetNames[0]];
             let rows = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
             if(!rows || rows.length < 1){ alert("Empty file"); return; }
-            
             let headerRowIndex = 0;
             let dataStartIndex = 1;
-            // Check first row first cell for the specific report title pattern
             if(rows.length > 0 && rows[0] && rows[0].length > 0){
                 let firstCellValue = String(rows[0][0] || "").trim();
-                // if first cell contains the exact pattern "WH05_COMMON_SOH_Detailed_ReportWH05" (case-sensitive as per typical export)
                 if(firstCellValue.includes("WH05_COMMON_SOH_Detailed_ReportWH05")){
                     headerRowIndex = 1;
                     dataStartIndex = 2;
-                    // safety: if file has only title row but no actual header, abort
                     if(rows.length <= headerRowIndex){
                         alert("File contains only title row, no valid data header found.");
                         return;
                     }
                 }
             }
-            
             let rawCols = rows[headerRowIndex].map(c => String(c || "").trim()).filter(c => c);
-            if(rawCols.length === 0){
-                alert("No column headers found in the expected row. Please check file format.");
-                return;
-            }
-            
+            if(rawCols.length === 0){ alert("No column headers found."); return; }
             let rawData = [];
             for(let i = dataStartIndex; i < rows.length; i++){
                 let row = [];
-                for(let j = 0; j < rawCols.length; j++){
-                    row.push(rows[i][j] !== undefined ? rows[i][j] : "");
-                }
+                for(let j = 0; j < rawCols.length; j++) row.push(rows[i][j] !== undefined ? rows[i][j] : "");
                 rawData.push(row);
             }
-            
             let proc = processData(rawData, rawCols);
             columns = proc.columns;
             originalData = proc.data;
@@ -366,17 +408,17 @@
             applyFilters();
         }
         
-        function applyFilters(){ let searchRaw=document.getElementById("searchInput").value.trim(); let terms=[]; if(searchRaw){ if(searchRaw.includes(",")) terms=searchRaw.split(",").map(s=>s.trim().toLowerCase()).filter(s=>s); else terms=searchRaw.split(/\s+/).map(s=>s.trim().toLowerCase()).filter(s=>s);} let brandSelect=document.getElementById("brandFilterSelect"); activeBrandFilter=brandSelect.value; let brandIdx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); filteredData=originalData.filter(row=>{ if(expiryFilterMode!==null){ let expCol=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let expStr=expCol!==-1?row[expCol]:""; let det=getExpiryDetails(expStr); if(expiryFilterMode==="expired"&&det.status!=="expired") return false; if(expiryFilterMode==="expiring_15"&&det.status!=="expiring_15") return false; if(expiryFilterMode==="expiring_30"&&det.status!=="expiring_30") return false; if(expiryFilterMode==="expiring_60"&&det.status!=="expiring_60") return false;} if(activeBrandFilter!=="ALL"&&brandIdx!==-1){ let brandVal=row[brandIdx]?String(row[brandIdx]).trim():""; if(brandVal!==activeBrandFilter) return false;} if(terms.length){ for(let i=0;i<row.length;i++){ let cellVal=String(row[i]!==undefined?row[i]:"").toLowerCase(); if(terms.some(t=>cellVal.includes(t))) return true;} return false;} return true;}); currentPage=1; renderTable(); highlightActiveStatCard(); updateTermInspector(); }
+        function applyFilters(){ let searchRaw=document.getElementById("searchInput").value.trim(); let terms=[]; if(searchRaw){ if(searchRaw.includes(",")) terms=searchRaw.split(",").map(s=>s.trim().toLowerCase()).filter(s=>s); else terms=searchRaw.split(/\s+/).map(s=>s.trim().toLowerCase()).filter(s=>s);} let brandSelect=document.getElementById("brandFilterSelect"); activeBrandFilter=brandSelect.value; let brandIdx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); filteredData=originalData.filter(row=>{ if(expiryFilterMode!==null){ let expCol=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let expStr=expCol!==-1?row[expCol]:""; let det=getExpiryDetails(expStr); if(expiryFilterMode==="expired"&&det.status!=="expired") return false; if(expiryFilterMode==="expiring_15"&&det.status!=="expiring_15") return false; if(expiryFilterMode==="expiring_30"&&det.status!=="expiring_30") return false; if(expiryFilterMode==="expiring_60"&&det.status!=="expiring_60") return false;} if(activeBrandFilter!=="ALL"&&brandIdx!==-1){ let brandVal=row[brandIdx]?String(row[brandIdx]).trim():""; if(brandVal!==activeBrandFilter) return false;} if(terms.length){ for(let i=0;i<row.length;i++){ let cellVal=String(row[i]!==undefined?row[i]:"").toLowerCase(); if(terms.some(t=>cellVal.includes(t))) return true;} return false;} return true;}); currentPage=1; renderTable(); highlightActiveStatCard(); updateTermInspector(); updateTopTotalQty(); }
         function highlightActiveStatCard(){ document.querySelectorAll(".stat-card").forEach(c=>c.classList.remove("stat-active")); if(expiryFilterMode==="expired") document.getElementById("statExpired")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active"); else document.getElementById("statTotal")?.classList.add("stat-active"); }
         function clearFilters(){ document.getElementById("searchInput").value=""; document.getElementById("brandFilterSelect").value="ALL"; activeBrandFilter="ALL"; expiryFilterMode=null; applyFilters(); }
-        function updateStats(){ let total=filteredData.length,expired=0,exp15=0,exp30=0,exp60=0,totalQty=0; let expIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let qtyIdx=columns.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); for(let row of filteredData){ let det=getExpiryDetails(expIdx!==-1?row[expIdx]:""); if(det.status==="expired") expired++; else if(det.status==="expiring_15") exp15++; else if(det.status==="expiring_30") exp30++; else if(det.status==="expiring_60") exp60++; if(qtyIdx!==-1){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) totalQty+=q;}} document.getElementById("totalRows").innerText=total; document.getElementById("expiredCount").innerText=expired; document.getElementById("expiring15Count").innerText=exp15; document.getElementById("expiring30Count").innerText=exp30; document.getElementById("expiring60Count").innerText=exp60; document.getElementById("totalQty").innerText=Math.round(totalQty); updatePalletStat(); }
+        function updateStats(){ let total=filteredData.length,expired=0,exp15=0,exp30=0,exp60=0; let expIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); for(let row of filteredData){ let det=getExpiryDetails(expIdx!==-1?row[expIdx]:""); if(det.status==="expired") expired++; else if(det.status==="expiring_15") exp15++; else if(det.status==="expiring_30") exp30++; else if(det.status==="expiring_60") exp60++;} document.getElementById("totalRows").innerText=total; document.getElementById("expiredCount").innerText=expired; document.getElementById("expiring15Count").innerText=exp15; document.getElementById("expiring30Count").innerText=exp30; document.getElementById("expiring60Count").innerText=exp60; updatePalletStat(); updateTopTotalQty(); }
         function getComparator(col,direction){ let idx=columns.indexOf(col); return (a,b)=>{ if(col.toUpperCase()==="EXP_DATE"){ let da=parseDate(a[idx]),db=parseDate(b[idx]); if(da&&db) return direction==="asc"?da-db:db-da; return 0;} if(col==="REMAINING_LIFE"){ let pa=a[idx]?.percentage||0,pb=b[idx]?.percentage||0; return direction==="asc"?pa-pb:pb-pa;} if(col==="CONSUMED_LIFE"){ let ca=a[idx]?.percentage||0,cb=b[idx]?.percentage||0; return direction==="asc"?ca-cb:cb-ca;} let va=String(a[idx]||"").toLowerCase(),vb=String(b[idx]||"").toLowerCase(); if(va<vb) return direction==="asc"?-1:1; if(va>vb) return direction==="asc"?1:-1; return 0;}; }
         function getSortedData(data){ if(!sortColumn||!columns.includes(sortColumn)) return [...data]; let sorted=[...data]; let comp=getComparator(sortColumn,sortDirection); sorted.sort(comp); return sorted; }
         function renderTable(){ if(!columns.length) return; let headerHtml="<tr>"; columns.forEach(col=>{headerHtml+=`<th data-column="${col}">${col.length>22?col.substring(0,20)+"..":col} ↕️</th>`;}); headerHtml+="</tr>"; document.getElementById("tableHeader").innerHTML=headerHtml; let tbody=document.getElementById("tableBody"); tbody.innerHTML=""; if(filteredData.length===0){ tbody.innerHTML='<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters. See term inspector above.</td></tr>'; updateStats(); updatePaginationUI(0); return; } let sortedFull=getSortedData(filteredData); let totalRows=sortedFull.length,totalPages=Math.ceil(totalRows/ROWS_PER_PAGE)||1; if(currentPage>totalPages) currentPage=totalPages; let start=(currentPage-1)*ROWS_PER_PAGE,end=Math.min(start+ROWS_PER_PAGE,totalRows); let pageData=sortedFull.slice(start,end); let expColIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); for(let row of pageData){ let expDateStr=expColIdx!==-1?row[expColIdx]:""; let details=getExpiryDetails(expDateStr); let rowClass=details.status==="expired"?"expired":(details.status==="expiring_15"||details.status==="expiring_30"?"expiring-soon":""); let tr=document.createElement("tr"); tr.className=rowClass; columns.forEach((col,idx)=>{ let val=row[idx]!==undefined?row[idx]:""; let td=document.createElement("td"); if(col.toUpperCase()==="STATUS") td.innerHTML=`<span class="status-badge status-${val}">${escapeHtml(val)}</span>`; else if(col==="REMAINING_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">📊 ${escapeHtml(val.text)}</span></div>`; else if(col==="CONSUMED_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">⏱️ ${escapeHtml(val.text)}</span></div>`; else if(col.toUpperCase()==="EXP_DATE") td.innerHTML=details.status==="expired"?`<span style="color:#c62828;">⚠️ EXPIRED: ${escapeHtml(val)}</span>`:(details.status==="expiring_15"?`<span style="color:#ef6c00;">⚠️ <15 days: ${escapeHtml(val)}</span>`:escapeHtml(val)); else td.innerText=val; tr.appendChild(td); }); tbody.appendChild(tr); } updateStats(); updatePaginationUI(totalRows); document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{ let col=th.getAttribute("data-column"); if(sortColumn===col) sortDirection=sortDirection==="asc"?"desc":"asc"; else{sortColumn=col;sortDirection="asc";} currentPage=1; renderTable();})); }
         function updatePaginationUI(totalRows){ let totalPages=Math.ceil(totalRows/ROWS_PER_PAGE)||1; document.getElementById("prevPageBtn").disabled=currentPage<=1; document.getElementById("nextPageBtn").disabled=currentPage>=totalPages; document.getElementById("pageInfo").innerText=`Page ${currentPage} of ${totalPages}`; document.getElementById("jumpPageInput").max=totalPages; }
         function goToPage(p){ let totalPages=Math.ceil(filteredData.length/ROWS_PER_PAGE)||1; let target=Math.min(totalPages,Math.max(1,p)); if(target!==currentPage){ currentPage=target; renderTable(); } }
         
-        document.getElementById("uploadArea").addEventListener("click",()=>document.getElementById("fileInput").click());
+        document.getElementById("modernUploadBtn").addEventListener("click",()=>document.getElementById("fileInput").click());
         document.getElementById("fileInput").addEventListener("change",(e)=>{if(e.target.files[0]){let reader=new FileReader();reader.onload=ev=>loadExcelData(ev.target.result);reader.readAsArrayBuffer(e.target.files[0]);}});
         document.getElementById("searchInput").addEventListener("input",applyFilters);
         document.getElementById("brandFilterSelect").addEventListener("change",applyFilters);
