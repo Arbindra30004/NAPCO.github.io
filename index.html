@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Emirates Logistics | Shelf Life + Pallet Intelligence | Term Match Inspector</title>
+    <title>NAPCO FOOD ITEMS SHELF LIFE TRACKER</title>
     <style>
         * {
             box-sizing: border-box;
@@ -110,7 +110,6 @@
         .main-app { padding: 20px; }
         .container { max-width: 1500px; margin: 0 auto; }
         
-        /* NEW top bar: upload left + total qty right */
         .top-actions-bar {
             display: flex;
             justify-content: space-between;
@@ -310,7 +309,6 @@
 <body>
     <div class="logo-top-bar"><div class="logo-container"><div class="animated-logo"><div class="logo-icon-emirates"><i class="fas fa-cargo-ship"></i></div><div class="logo-text-emirates"><span class="logo-main-emirates">EMIRATES LOGISTICS</span><span class="logo-sub-emirates">WHAREHOUSE-05 COMMON CLIENTS</span></div></div><div class="warehouse-badge"><i class="fas fa-pallet"></i> EL · NAPCO Tracker | Term Inspector</div></div></div>
     <div class="main-app"><div class="container">
-        <!-- NEW TOP ROW: Upload button left + TOTAL QTY right -->
         <div class="top-actions-bar">
             <button id="modernUploadBtn" class="upload-btn-modern"><i class="fas fa-cloud-upload-alt"></i> 📂 Upload Excel</button>
             <div class="total-qty-top">
@@ -319,15 +317,14 @@
                 <span class="sub">units</span>
             </div>
         </div>
-        <!-- hidden file input -->
         <input type="file" id="fileInput" accept=".xlsx, .xls, .csv" style="display:none;">
         
         <h1>NAPCO_SHELF_LIFE_TRACKER</h1>
         <div class="subtitle">🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄🎄</div>
         
-        <!-- STATS ROW (without TOTAL QTY card, moved to top) -->
         <div class="stats" id="statsContainer">
-            <div class="stat-card" id="statTotal" style="border-left-color:#1a3a5c"><h3>📦 Total Products</h3><div class="number" id="totalRows">0</div></div>
+            <!-- Unique Items (distinct ITEM_CODES) based on filtered data -->
+            <div class="stat-card" id="statUniqueItems" style="border-left-color:#1a3a5c"><h3>📦 Unique Items</h3><div class="number" id="uniqueItemsCount">0</div></div>
             <div class="stat-card" id="statExpired" style="border-left-color:#d32f2f"><h3>❌ Expired</h3><div class="number" id="expiredCount">0</div></div>
             <div class="stat-card" id="statExpiring15" style="border-left-color:#ff9800"><h3>⚠️ Expiring &lt;15 days</h3><div class="number" id="expiring15Count">0</div></div>
             <div class="stat-card" id="statExpiring30" style="border-left-color:#ffc107"><h3>⚠️ Expiring &lt;30 days</h3><div class="number" id="expiring30Count">0</div></div>
@@ -336,15 +333,15 @@
         </div>
         
         <div class="filters">
-            <input type="text" id="searchInput" placeholder="🔍" autocomplete="off">
+            <input type="text" id="searchInput" placeholder="🔍 Search term(s) separated by comma or space" autocomplete="off">
             <div style="display: flex; align-items: center; gap: 8px;"><span class="brand-dropdown-label"><i class="fas fa-tag"></i> BRAND:</span><select id="brandFilterSelect"><option value="ALL">🏷️ All Brands</option></select></div>
             <button id="clearFiltersBtn">Clear All Filters</button>
             <button id="exportBtn" class="export-btn">📎 Export data <span class="export-note">🎄</span></button>
         </div>
         <div id="termInspectorPanel" class="term-inspector-panel hide-panel"><div class="inspector-header"><h3><i class="fas fa-search-plus"></i> 🔎 SEARCH TERM STATUS (per term)</h3><button id="closeInspectorBtn" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:#e65100;">&times;</button></div><div id="termStatusContainer" class="term-badges-container"></div><div class="inspector-actions" id="inspectorActions"></div></div>
-        <div class="table-wrapper"><table id="dataTable"><thead id="tableHeader"></thead><tbody id="tableBody"></tbody></table></div>
+        <div class="table-wrapper"><table id="dataTable"><thead id="tableHeader"></thead><tbody id="tableBody"></tbody><table></div>
         <div class="pagination-container" id="paginationControls"><button class="pagination-btn" id="prevPageBtn" disabled>◀ Previous</button><span class="page-info" id="pageInfo">Page 1 of 1</span><button class="pagination-btn" id="nextPageBtn" disabled>Next ▶</button><div class="pagination-jump"><span>Go to page</span><input type="number" id="jumpPageInput" min="1" value="1" style="width: 65px;"><button id="jumpPageBtn">Go</button></div></div>
-        <div class="footer">✅ Click column headers to sort | 🔍 <strong>SEARCH TERM INSPECTOR</strong> shows which terms are missing/hidden | 📎 Export always includes ALL filtered rows (ignores pagination) respecting current sort order</div>
+        <div class="footer">✅ Click column headers to sort | 🔍 <strong>SEARCH TERM INSPECTOR</strong> shows which terms are missing/hidden | 📎 Export always includes ALL filtered rows (ignores pagination) respecting current sort order | <strong>Unique Items</strong> = distinct ITEM_CODES count based on current filters.</div>
     </div></div>
     <script>
         let originalData = [], filteredData = [], columns = [];
@@ -367,7 +364,20 @@
         function computeUniquePalletCount(data,cols){ let palletIdx=cols.findIndex(c=>c.toUpperCase()==="PALLET"); if(palletIdx!==-1){ let vals=new Set(); for(let row of data){ let v=row[palletIdx]; if(v&&String(v).trim()) vals.add(String(v).trim());} return vals.size;} else{ let qtyIdx=cols.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); if(qtyIdx!==-1){ let total=0; for(let row of data){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) total+=q;} return Math.ceil(total/50);} return 0;} }
         function updatePalletStat(){ document.getElementById("uniquePalletCount").innerText=(!filteredData.length||!columns.length)?0:computeUniquePalletCount(filteredData,columns); }
         
-        // update top-right total QTY display
+        // NEW: compute distinct ITEM_CODES count from filteredData
+        function getUniqueItemCount(data, cols){
+            let itemIdx = cols.findIndex(c => c.toUpperCase() === "ITEM_CODES");
+            if(itemIdx === -1) return 0;
+            let uniqueSet = new Set();
+            for(let row of data){
+                let code = row[itemIdx];
+                if(code !== undefined && code !== null && String(code).trim() !== ""){
+                    uniqueSet.add(String(code).trim());
+                }
+            }
+            return uniqueSet.size;
+        }
+        
         function updateTopTotalQty(){ let totalQty=0; let qtyIdx=columns.findIndex(c=>c.toUpperCase()==="AVAILABLE_QTY"); if(qtyIdx!==-1){ for(let row of filteredData){ let q=parseFloat(row[qtyIdx]); if(!isNaN(q)) totalQty+=q;}} document.getElementById("topTotalQty").innerText=Math.round(totalQty); }
         
         function processData(rawRows,rawCols){ let colMap={}; rawCols.forEach((n,i)=>colMap[n.toUpperCase()]=i); let finalCols=[],indices=[]; for(let req of REQUIRED_COLUMNS){ let up=req.toUpperCase(); if(colMap.hasOwnProperty(up)){finalCols.push(req);indices.push(colMap[up]);} else{finalCols.push(req);indices.push(-1);}} let processed=[]; for(let row of rawRows){ let newRow=[]; for(let i=0;i<indices.length;i++){ let idx=indices[i]; if(idx!==-1&&row[idx]!==undefined&&row[idx]!==null) newRow.push(row[idx]); else newRow.push("");} processed.push(newRow);} let manIdx=finalCols.indexOf("MAN_DATE"),expIdx=finalCols.indexOf("EXP_DATE"); let finalColsWithLife=[...finalCols,"REMAINING_LIFE","CONSUMED_LIFE"]; let data=[]; for(let row of processed){ let man=manIdx!==-1?row[manIdx]:"", exp=expIdx!==-1?row[expIdx]:""; let life=getLifeDisplay(man,exp); data.push([...row,life.remaining,life.consumed]);} return {columns:finalColsWithLife,data}; }
@@ -409,9 +419,22 @@
         }
         
         function applyFilters(){ let searchRaw=document.getElementById("searchInput").value.trim(); let terms=[]; if(searchRaw){ if(searchRaw.includes(",")) terms=searchRaw.split(",").map(s=>s.trim().toLowerCase()).filter(s=>s); else terms=searchRaw.split(/\s+/).map(s=>s.trim().toLowerCase()).filter(s=>s);} let brandSelect=document.getElementById("brandFilterSelect"); activeBrandFilter=brandSelect.value; let brandIdx=columns.findIndex(c=>c.toUpperCase()==="BRAND"); filteredData=originalData.filter(row=>{ if(expiryFilterMode!==null){ let expCol=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); let expStr=expCol!==-1?row[expCol]:""; let det=getExpiryDetails(expStr); if(expiryFilterMode==="expired"&&det.status!=="expired") return false; if(expiryFilterMode==="expiring_15"&&det.status!=="expiring_15") return false; if(expiryFilterMode==="expiring_30"&&det.status!=="expiring_30") return false; if(expiryFilterMode==="expiring_60"&&det.status!=="expiring_60") return false;} if(activeBrandFilter!=="ALL"&&brandIdx!==-1){ let brandVal=row[brandIdx]?String(row[brandIdx]).trim():""; if(brandVal!==activeBrandFilter) return false;} if(terms.length){ for(let i=0;i<row.length;i++){ let cellVal=String(row[i]!==undefined?row[i]:"").toLowerCase(); if(terms.some(t=>cellVal.includes(t))) return true;} return false;} return true;}); currentPage=1; renderTable(); highlightActiveStatCard(); updateTermInspector(); updateTopTotalQty(); }
-        function highlightActiveStatCard(){ document.querySelectorAll(".stat-card").forEach(c=>c.classList.remove("stat-active")); if(expiryFilterMode==="expired") document.getElementById("statExpired")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active"); else document.getElementById("statTotal")?.classList.add("stat-active"); }
+        function highlightActiveStatCard(){ document.querySelectorAll(".stat-card").forEach(c=>c.classList.remove("stat-active")); if(expiryFilterMode==="expired") document.getElementById("statExpired")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_15") document.getElementById("statExpiring15")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_30") document.getElementById("statExpiring30")?.classList.add("stat-active"); else if(expiryFilterMode==="expiring_60") document.getElementById("statExpiring60")?.classList.add("stat-active"); else document.getElementById("statUniqueItems")?.classList.add("stat-active"); }
         function clearFilters(){ document.getElementById("searchInput").value=""; document.getElementById("brandFilterSelect").value="ALL"; activeBrandFilter="ALL"; expiryFilterMode=null; applyFilters(); }
-        function updateStats(){ let total=filteredData.length,expired=0,exp15=0,exp30=0,exp60=0; let expIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); for(let row of filteredData){ let det=getExpiryDetails(expIdx!==-1?row[expIdx]:""); if(det.status==="expired") expired++; else if(det.status==="expiring_15") exp15++; else if(det.status==="expiring_30") exp30++; else if(det.status==="expiring_60") exp60++;} document.getElementById("totalRows").innerText=total; document.getElementById("expiredCount").innerText=expired; document.getElementById("expiring15Count").innerText=exp15; document.getElementById("expiring30Count").innerText=exp30; document.getElementById("expiring60Count").innerText=exp60; updatePalletStat(); updateTopTotalQty(); }
+        function updateStats(){ 
+            let totalRowsCount = filteredData.length; 
+            let expired=0, exp15=0, exp30=0, exp60=0; 
+            let expIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); 
+            for(let row of filteredData){ let det=getExpiryDetails(expIdx!==-1?row[expIdx]:""); if(det.status==="expired") expired++; else if(det.status==="expiring_15") exp15++; else if(det.status==="expiring_30") exp30++; else if(det.status==="expiring_60") exp60++;} 
+            let uniqueItems = getUniqueItemCount(filteredData, columns);
+            document.getElementById("uniqueItemsCount").innerText = uniqueItems;
+            document.getElementById("expiredCount").innerText=expired; 
+            document.getElementById("expiring15Count").innerText=exp15; 
+            document.getElementById("expiring30Count").innerText=exp30; 
+            document.getElementById("expiring60Count").innerText=exp60; 
+            updatePalletStat(); 
+            updateTopTotalQty(); 
+        }
         function getComparator(col,direction){ let idx=columns.indexOf(col); return (a,b)=>{ if(col.toUpperCase()==="EXP_DATE"){ let da=parseDate(a[idx]),db=parseDate(b[idx]); if(da&&db) return direction==="asc"?da-db:db-da; return 0;} if(col==="REMAINING_LIFE"){ let pa=a[idx]?.percentage||0,pb=b[idx]?.percentage||0; return direction==="asc"?pa-pb:pb-pa;} if(col==="CONSUMED_LIFE"){ let ca=a[idx]?.percentage||0,cb=b[idx]?.percentage||0; return direction==="asc"?ca-cb:cb-ca;} let va=String(a[idx]||"").toLowerCase(),vb=String(b[idx]||"").toLowerCase(); if(va<vb) return direction==="asc"?-1:1; if(va>vb) return direction==="asc"?1:-1; return 0;}; }
         function getSortedData(data){ if(!sortColumn||!columns.includes(sortColumn)) return [...data]; let sorted=[...data]; let comp=getComparator(sortColumn,sortDirection); sorted.sort(comp); return sorted; }
         function renderTable(){ if(!columns.length) return; let headerHtml="<tr>"; columns.forEach(col=>{headerHtml+=`<th data-column="${col}">${col.length>22?col.substring(0,20)+"..":col} ↕️</th>`;}); headerHtml+="</tr>"; document.getElementById("tableHeader").innerHTML=headerHtml; let tbody=document.getElementById("tableBody"); tbody.innerHTML=""; if(filteredData.length===0){ tbody.innerHTML='<tr><td colspan="100" class="no-data">No data found. Upload Excel file or adjust filters. See term inspector above.</td></tr>'; updateStats(); updatePaginationUI(0); return; } let sortedFull=getSortedData(filteredData); let totalRows=sortedFull.length,totalPages=Math.ceil(totalRows/ROWS_PER_PAGE)||1; if(currentPage>totalPages) currentPage=totalPages; let start=(currentPage-1)*ROWS_PER_PAGE,end=Math.min(start+ROWS_PER_PAGE,totalRows); let pageData=sortedFull.slice(start,end); let expColIdx=columns.findIndex(c=>c.toUpperCase()==="EXP_DATE"); for(let row of pageData){ let expDateStr=expColIdx!==-1?row[expColIdx]:""; let details=getExpiryDetails(expDateStr); let rowClass=details.status==="expired"?"expired":(details.status==="expiring_15"||details.status==="expiring_30"?"expiring-soon":""); let tr=document.createElement("tr"); tr.className=rowClass; columns.forEach((col,idx)=>{ let val=row[idx]!==undefined?row[idx]:""; let td=document.createElement("td"); if(col.toUpperCase()==="STATUS") td.innerHTML=`<span class="status-badge status-${val}">${escapeHtml(val)}</span>`; else if(col==="REMAINING_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">📊 ${escapeHtml(val.text)}</span></div>`; else if(col==="CONSUMED_LIFE"&&val?.percentage!==null) td.innerHTML=`<div style="display:flex;align-items:center;gap:6px;"><div class="progress-bar-container" style="width:60px;"><div class="progress-bar ${val.barClass}" style="width:${Math.min(100,Math.max(0,val.percentage))}%;"></div></div><span class="${val.textClass}">⏱️ ${escapeHtml(val.text)}</span></div>`; else if(col.toUpperCase()==="EXP_DATE") td.innerHTML=details.status==="expired"?`<span style="color:#c62828;">⚠️ EXPIRED: ${escapeHtml(val)}</span>`:(details.status==="expiring_15"?`<span style="color:#ef6c00;">⚠️ <15 days: ${escapeHtml(val)}</span>`:escapeHtml(val)); else td.innerText=val; tr.appendChild(td); }); tbody.appendChild(tr); } updateStats(); updatePaginationUI(totalRows); document.querySelectorAll("th").forEach(th=>th.addEventListener("click",()=>{ let col=th.getAttribute("data-column"); if(sortColumn===col) sortDirection=sortDirection==="asc"?"desc":"asc"; else{sortColumn=col;sortDirection="asc";} currentPage=1; renderTable();})); }
@@ -424,7 +447,7 @@
         document.getElementById("brandFilterSelect").addEventListener("change",applyFilters);
         document.getElementById("clearFiltersBtn").addEventListener("click",clearFilters);
         document.getElementById("exportBtn").addEventListener("click",()=>{ if(!filteredData.length||!columns.length) alert("No filtered data to export"); else { let dataToExport=getSortedData(filteredData); let exportRows=[columns]; for(let row of dataToExport){ let exportRow=row.map((val,i)=>{ if((columns[i]==="REMAINING_LIFE"||columns[i]==="CONSUMED_LIFE")&&val&&typeof val==="object"&&val.text) return val.text; return val; }); exportRows.push(exportRow); } let ws=XLSX.utils.aoa_to_sheet(exportRows); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Filtered_Shelf_Life_ALL"); XLSX.writeFile(wb,`emirates_export_filtered_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.xlsx`); alert(`✅ Exported ${dataToExport.length} filtered rows (all pages, sort order applied).`); } });
-        document.getElementById("statTotal").addEventListener("click",()=>{ expiryFilterMode=null; applyFilters(); });
+        document.getElementById("statUniqueItems").addEventListener("click",()=>{ expiryFilterMode=null; applyFilters(); });
         document.getElementById("statExpired").addEventListener("click",()=>{ expiryFilterMode="expired"; applyFilters(); });
         document.getElementById("statExpiring15").addEventListener("click",()=>{ expiryFilterMode="expiring_15"; applyFilters(); });
         document.getElementById("statExpiring30").addEventListener("click",()=>{ expiryFilterMode="expiring_30"; applyFilters(); });
